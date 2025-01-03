@@ -29,5 +29,10 @@ pipeline{
                 bat 'docker push ajaykamble10/clgportal_api'
             }
         }
+        stage('Deploy to kubernetes'){
+            steps{
+                kubernetesDeploy (configs: 'deploymentservice.yaml', kubeconfigId: 'k8sconfigpwd')
+            }
+        }
     }
 }
