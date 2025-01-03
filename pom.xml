@@ -14,8 +14,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>clgportal</name>
-	<description>This is repository contains college portal api's with oracle
-		10g database.</description>
+	<description>This is project contains college portal api's with postgresql database.</description>
 	<url />
 	<licenses>
 		<license />
@@ -110,6 +109,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>clgportal_api</finalName>
 	</build>
 
 </project>
