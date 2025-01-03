@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment # Kubernetes resource kind we are creating
+metadata:
+  name: clgportal_api
+spec:
+  selector:
+    matchLabels:
+      app: clgportal_api
+  replicas: 2 # Number of replicas that will be created for this deployment
+  template:
+    metadata:
+      labels:
+        app: clgportal_api
+    spec:
+      containers: 
+        - name: clgportal_api
+          image: ajaykamble10/clgportal_api # Image that will be used to containers in the cluster
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080  # The port that the container is running on in the cluster
+
+---
+
+apiVersion: v1 #Kubernetes API version
+kind: Service #Kubernetes resource kind we creating
+metadata:   #Metadat of the resource kind we creating
+    name: clgportal_api
+spec: 
+    selector: 
+      app: clgportal_api
+    ports: 
+      -protocol: "TCP"
+      port: 8080 #The port that the service is running on in the cluster
+      targetedPort: 8080 #The port exposed by the service
+    type: NodePort  #type of the service  
