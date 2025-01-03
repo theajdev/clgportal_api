@@ -13,7 +13,7 @@ pipeline{
         stage('Build docker image'){
             steps{
                 script{
-                    bat 'docker build -t clgportal_api .'
+                    bat 'docker build -t clgportal-api .'
                 }
             }
         }
@@ -22,11 +22,11 @@ pipeline{
                 withCredentials([string(credentialsId: 'docker_jenkins_pwd', variable: 'docker_jenkins_pwd')]) {
                  powershell '''
                 docker login -u ajaykamble10 --password $env:docker_jenkins_pwd
-                docker tag clgportal_api ajaykamble10/clgportal_api:latest
-                docker push ajaykamble10/clgportal_api:latest
+                docker tag clgportal-api ajaykamble10/clgportal-api:latest
+                docker push ajaykamble10/clgportal-api:latest
             '''
 }
-                bat 'docker push ajaykamble10/clgportal_api'
+                bat 'docker push ajaykamble10/clgportal-api'
             }
         }
         stage('Deploy to kubernetes'){
