@@ -15,27 +15,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aj.clgportal.dto.ApiResponse;
-import com.aj.clgportal.dto.UserTypeDto;
-import com.aj.clgportal.service.UserTypeService;
+import com.aj.clgportal.dto.RoleDto;
+import com.aj.clgportal.service.RoleService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/user")
-public class UserTypeController {
+@RequestMapping("/api/role")
+public class RoleController {
 
 	@Autowired
-	public UserTypeService userTypeServ;
+	public RoleService userTypeServ;
 
 	@PostMapping("/")
-	public ResponseEntity<UserTypeDto> NewUserType(@Valid @RequestBody UserTypeDto userTypeDto) {
-		UserTypeDto userType = userTypeServ.createUserType(userTypeDto);
-		return new ResponseEntity<UserTypeDto>(userType, HttpStatus.CREATED);
+	public ResponseEntity<RoleDto> NewUserType(@Valid @RequestBody RoleDto roleDto) {
+		RoleDto userType = userTypeServ.createUserType(roleDto);
+		return new ResponseEntity<RoleDto>(userType, HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<UserTypeDto> updateUserType(@Valid @RequestBody UserTypeDto userTypeDto, @PathVariable long id) {
-		UserTypeDto updatedUserType = userTypeServ.updateUserType(userTypeDto, id);
+	public ResponseEntity<RoleDto> updateUserType(@Valid @RequestBody RoleDto roleDto, @PathVariable long id) {
+		RoleDto updatedUserType = userTypeServ.updateUserType(roleDto, id);
 		return ResponseEntity.ok(updatedUserType);
 	}
 
@@ -46,14 +46,14 @@ public class UserTypeController {
 	}
 	
 	@GetMapping("/")
-	public ResponseEntity<List<UserTypeDto>> getAllUserTypes(){
-		List<UserTypeDto> list = userTypeServ.getAllUserTypes();
+	public ResponseEntity<List<RoleDto>> getAllUserTypes(){
+		List<RoleDto> list = userTypeServ.getAllUserTypes();
 		return ResponseEntity.ok(list);
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<UserTypeDto> getUserType(@PathVariable long id){
-		UserTypeDto userType = userTypeServ.getUserTypeById(id);
+	public ResponseEntity<RoleDto> getUserType(@PathVariable long id){
+		RoleDto userType = userTypeServ.getUserTypeById(id);
 		return new ResponseEntity<>(userType,HttpStatus.OK);
 	}
 }

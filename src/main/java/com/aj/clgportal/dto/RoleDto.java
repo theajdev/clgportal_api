@@ -7,11 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserTypeDto {
+public class RoleDto {
 	public long id;
 	@NotNull
 	@Size(min = 4,max = 10,message = "User Type must be contains minimum 4 characters.")
-	public String userDesc;
+	public String roleDesc;
 	@NotNull
 	public Character status;
 }
