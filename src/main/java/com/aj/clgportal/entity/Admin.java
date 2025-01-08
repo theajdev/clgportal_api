@@ -24,31 +24,30 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="tbl_admin")
+@Table(name = "tbl_admin")
 public class Admin {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tbl_admin_seq")
 	@SequenceGenerator(name = "tbl_admin_seq", sequenceName = "tbl_admin_seq", allocationSize = 1)
-	@Column(name="admin_id")
+	@Column(name = "admin_id")
 	public long id;
-	@Column(name="first_name",nullable = false)
+	@Column(name = "first_name", nullable = false)
 	public String firstName;
-	@Column(name="middle_name",nullable = true)
+	@Column(name = "middle_name", nullable = true)
 	public String middleName;
-	@Column(name="last_name",nullable = false)
+	@Column(name = "last_name", nullable = false)
 	public String lastName;
-	@Column(name="username",nullable = false)
+	@Column(name = "username", nullable = false)
 	public String username;
-	@Column(name="email",nullable = false)
+	@Column(name = "email", nullable = false)
 	public String email;
-	@Column(name="password",nullable = false)
+	@Column(name = "password", nullable = false)
 	public String password;
-	@Column(name="profile_pic",nullable = true)
+	@Column(name = "profile_pic", nullable = true)
 	public String profilePic;
-	@Column(name="status",nullable = false)
+	@Column(name = "status", nullable = false)
 	public Character status;
-	@ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-	@JoinTable(name="users_roles",joinColumns = @JoinColumn(name="user_id",referencedColumnName = "admin_id"),
-	inverseJoinColumns = @JoinColumn(name="role_id",referencedColumnName = "role_id"))
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name = "admin_roles", joinColumns = @JoinColumn(name = "admin_id", referencedColumnName = "admin_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
 	private List<Role> roles;
 }

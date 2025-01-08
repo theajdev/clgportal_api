@@ -17,52 +17,51 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter{
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private JwtTokenProvider jwtTokenProvider;
 
-    private UserDetailsService userDetailsService;
-    
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userDetailsService = userDetailsService;
-    }
-    
-    
-    private String getTokenFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
+	private UserDetailsService userDetailsService;
 
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7, bearerToken.length());
-        }
+	public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
+		this.jwtTokenProvider = jwtTokenProvider;
+		this.userDetailsService = userDetailsService;
+	}
 
-        return null;
-    }
-    
+	private String getTokenFromRequest(HttpServletRequest request) {
+		String bearerToken = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+			return bearerToken.substring(7, bearerToken.length());
+		}
+
+		return null;
+	}
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		// Get JWT Token from HTTP Request
 
-        String token = getTokenFromRequest(request);
+		String token = getTokenFromRequest(request);
 
-        // Validate token
-        if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
-            // get username from token
-            String username = jwtTokenProvider.getUsername(token);
+		// Validate token
+		if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
+			// get username from token
+			String username = jwtTokenProvider.getUsername(token);
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+			UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
+			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+					userDetails, null, userDetails.getAuthorities());
 
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+			authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        }
+			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+		}
 
-        filterChain.doFilter(request, response);
-		
+		filterChain.doFilter(request, response);
+
 	}
 
 }

@@ -34,8 +34,7 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public RoleDto updateUserType(RoleDto roleDto, long id) {
-		Role role = userTypeRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("User type", "id", id));
+		Role role = userTypeRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User type", "id", id));
 		role.setRoleDesc(roleDto.getRoleDesc());
 		role.setStatus(roleDto.getStatus());
 		Role updatedUserType = userTypeRepo.save(role);
@@ -45,16 +44,14 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public void deleteUserType(long id) {
-		Role role = userTypeRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("User type", "id", id));
+		Role role = userTypeRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User type", "id", id));
 		userTypeRepo.delete(role);
 
 	}
 
 	@Override
 	public RoleDto getUserTypeById(long id) {
-		Role role = userTypeRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("User type", "id", id));
+		Role role = userTypeRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User type", "id", id));
 		RoleDto roleDto = UserTypeToDto(role);
 		return roleDto;
 	}
