@@ -18,6 +18,8 @@ import com.aj.clgportal.dto.ApiResponse;
 import com.aj.clgportal.dto.StudentDto;
 import com.aj.clgportal.service.StudentService;
 
+import jakarta.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("/api/student")
 public class StudentController {
@@ -26,14 +28,14 @@ public class StudentController {
 	StudentService studentService;
 	
 	@PostMapping("/")
-	public ResponseEntity<StudentDto> newStudent(@RequestBody StudentDto studentDto) {
-		StudentDto newStudent = studentService.newStudent(studentDto);
+	public ResponseEntity<StudentDto> newStudent(@RequestBody StudentDto studentDto,HttpSession session) {
+		StudentDto newStudent = studentService.newStudent(studentDto,session);
 		return new ResponseEntity<StudentDto>(newStudent,HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<StudentDto> updateStudent(@RequestBody StudentDto studentDto, @PathVariable long id){
-		StudentDto updatedStudent = studentService.updateStudent(studentDto, id);
+	public ResponseEntity<StudentDto> updateStudent(@RequestBody StudentDto studentDto, @PathVariable long id,HttpSession session){
+		StudentDto updatedStudent = studentService.updateStudent(studentDto, id,session);
 		return ResponseEntity.ok(updatedStudent);
 	}
 	

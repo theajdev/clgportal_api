@@ -48,7 +48,7 @@ public class Student {
 	private String profilePic;
 	@Column(name = "status")
 	private Character status;
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "teacher_id")
 	private Teacher teacher;
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

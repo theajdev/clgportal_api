@@ -12,15 +12,18 @@ import com.aj.clgportal.security.JwtAuthenticationFilter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 
 
-@Getter
 @Configuration
+@Getter
+@Setter
 @AllArgsConstructor
 public class SpringSecurityConfig {
 
@@ -39,8 +42,13 @@ public class SpringSecurityConfig {
 			authorize.requestMatchers("/api/auth/**").permitAll();
 			authorize.requestMatchers("/api/admin/**").hasRole("ADMIN");
 			authorize.requestMatchers("/api/role/**").hasRole("ADMIN");
-			authorize.requestMatchers("/api/teacher/**").hasRole("ADMIN");
+			authorize.requestMatchers(HttpMethod.POST, "/api/teacher/**").hasRole("ADMIN");
+			authorize.requestMatchers(HttpMethod.PUT, "/api/teacher/**").hasRole("ADMIN");
+			authorize.requestMatchers(HttpMethod.GET, "/api/teacher/**").hasAnyRole("ADMIN","TEACHER");
 			authorize.requestMatchers("/api/student/**").hasRole("TEACHER");
+			authorize.requestMatchers(HttpMethod.POST, "/api/student/**").hasRole("TEACHER");
+			authorize.requestMatchers(HttpMethod.PUT, "/api/student/**").hasRole("TEACHER");
+			authorize.requestMatchers(HttpMethod.GET, "/api/student/**").hasAnyRole("ADMIN","TEACHER","STUDENT");
 			authorize.anyRequest().authenticated();
 		}).httpBasic(Customizer.withDefaults());
 		http.exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint));

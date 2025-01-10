@@ -46,7 +46,7 @@ public class Teacher {
 	private String profilePic;
 	@Column(name = "status")
 	private Character status;
-	@OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
 	private List<Student> students;
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "teacher_roles", joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))

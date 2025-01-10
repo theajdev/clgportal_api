@@ -11,26 +11,35 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.aj.clgportal.dto.ApiResponse;
+import com.aj.clgportal.dto.ErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<ApiResponse> resourceNotFoundExceptionHandler(ResourceNotFoundException ex){
-		String message=ex.getMessage();
-		ApiResponse apiResponse=new ApiResponse(message,false);
-		return new ResponseEntity<ApiResponse>(apiResponse,HttpStatus.NOT_FOUND);
+	public ResponseEntity<ApiResponse> resourceNotFoundExceptionHandler(ResourceNotFoundException ex) {
+		String message = ex.getMessage();
+		ApiResponse apiResponse = new ApiResponse(message, false);
+		return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.NOT_FOUND);
 	}
-	
+
+	@ExceptionHandler(UserNameNotFoundException.class)
+	public ResponseEntity<ErrorResponse> UserNameNotFoundExceptionHandler(UserNameNotFoundException ex) {
+		String message = ex.getMessage();
+		ErrorResponse errorResponse = new ErrorResponse(message, false);
+		return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.UNAUTHORIZED);
+	}
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Map<String, String>> handleMethodArgumentsNotValidException(MethodArgumentNotValidException ex){
-		Map<String, String> resp=new HashMap<>();
-		
-		ex.getBindingResult().getAllErrors().forEach((error)->{
-			String fieldName = ((FieldError)error).getField();
+	public ResponseEntity<Map<String, String>> handleMethodArgumentsNotValidException(
+			MethodArgumentNotValidException ex) {
+		Map<String, String> resp = new HashMap<>();
+
+		ex.getBindingResult().getAllErrors().forEach((error) -> {
+			String fieldName = ((FieldError) error).getField();
 			String message = error.getDefaultMessage();
 			resp.put(fieldName, message);
 		});
-		return new ResponseEntity<Map<String,String>>(resp,HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<Map<String, String>>(resp, HttpStatus.BAD_REQUEST);
 	}
 }

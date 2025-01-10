@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.aj.clgportal.dto.JwtAuthResponse;
 import com.aj.clgportal.dto.LoginDto;
 import com.aj.clgportal.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -21,12 +23,13 @@ public class AuthController {
 
 	// build Login REST API
 	@PostMapping("/login")
-	public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto) {
+	public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto,HttpServletRequest request) {
 		String token = authServ.login(loginDto);
-		System.out.println("password: "+loginDto.getPassword());
 		JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
 		jwtAuthResponse.setAccessToken(token);
 		jwtAuthResponse.setLoginId(loginDto.getUsernameOrEmail());
+		HttpSession session=request.getSession();
+		session.setAttribute("usernameoremail",loginDto.getUsernameOrEmail());
 		return new ResponseEntity<>(jwtAuthResponse, HttpStatus.OK);
 	}
 }

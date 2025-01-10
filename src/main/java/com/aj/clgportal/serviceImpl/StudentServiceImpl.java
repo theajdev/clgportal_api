@@ -2,15 +2,12 @@ package com.aj.clgportal.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.aj.clgportal.dto.JwtAuthResponse;
 import com.aj.clgportal.dto.StudentDto;
 import com.aj.clgportal.entity.Role;
 import com.aj.clgportal.entity.Student;
@@ -20,6 +17,8 @@ import com.aj.clgportal.repository.RoleRepository;
 import com.aj.clgportal.repository.StudentRepository;
 import com.aj.clgportal.repository.TeacherRepository;
 import com.aj.clgportal.service.StudentService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -35,11 +34,13 @@ public class StudentServiceImpl implements StudentService {
 
 	@Autowired
 	TeacherRepository teacherRepo;
-
-	JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+	
+	String teacherUsername=null;
+	
 
 	@Override
-	public StudentDto newStudent(StudentDto studDto) {
+	public StudentDto newStudent(StudentDto studDto,HttpSession session) {
+		teacherUsername=(String) session.getAttribute("usernameoremail");
 		Student student = new Student();
 		student.setFirstName(studDto.getFirstName());
 		student.setMiddleName(studDto.getMiddleName());
@@ -50,9 +51,8 @@ public class StudentServiceImpl implements StudentService {
 		student.setGuardianName(studDto.getGuardianName());
 		student.setProfilePic(studDto.getProfilePic());
 		student.setStatus(studDto.getStatus());
-
-		Teacher teacher = teacherRepo.findByUsernameOrEmail(jwtAuthResponse.getLoginId(), jwtAuthResponse.getLoginId())
-				.orElseThrow(() -> new UsernameNotFoundException("Teacher does not exists by username or email."));
+		Teacher teacher=teacherRepo.findByUsernameOrEmail(teacherUsername, teacherUsername);
+		System.out.println("teacher: "+teacher.getId());
 		student.setTeacher(teacher);
 
 		List<Role> roles = new ArrayList<>();
@@ -66,7 +66,8 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public StudentDto updateStudent(StudentDto studDto, long id) {
+	public StudentDto updateStudent(StudentDto studDto, long id,HttpSession session) {
+		teacherUsername=(String) session.getAttribute("usernameoremail");
 		Student student = studentRepo.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Student", "student id", id));
 		student.setFirstName(studDto.getFirstName());
@@ -78,11 +79,8 @@ public class StudentServiceImpl implements StudentService {
 		student.setGuardianName(studDto.getGuardianName());
 		student.setProfilePic(studDto.getProfilePic());
 		student.setStatus(studDto.getStatus());
-
-		Teacher teacher = teacherRepo.findByUsernameOrEmail(jwtAuthResponse.getLoginId(), jwtAuthResponse.getLoginId())
-				.orElseThrow(() -> new UsernameNotFoundException("Teacher does not exists by username or email."));
+		Teacher teacher=teacherRepo.findByUsernameOrEmail(teacherUsername, teacherUsername);
 		student.setTeacher(teacher);
-
 		List<Role> roles = new ArrayList<>();
 		Role userRole = roleRepo.findByName("ROLE_STUDENT");
 		roles.add(userRole);
@@ -123,5 +121,9 @@ public class StudentServiceImpl implements StudentService {
 		Student student = modelMapper.map(studDto, Student.class);
 		return student;
 	}
+
+	
+
+	
 
 }

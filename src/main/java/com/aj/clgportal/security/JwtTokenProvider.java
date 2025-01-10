@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import com.aj.clgportal.exception.UserNameNotFoundException;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -21,7 +23,7 @@ public class JwtTokenProvider {
 	private long jwtExpirationDate;
 
 	// Generate JWT Token
-	public String generateToken(Authentication auth) {
+	public String generateToken(Authentication auth) throws UserNameNotFoundException {
 		String username = auth.getName();
 		Date currentDate = new Date();
 		Date expirationDate = new Date(currentDate.getTime() + jwtExpirationDate);
