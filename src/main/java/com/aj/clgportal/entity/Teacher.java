@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -48,6 +49,9 @@ public class Teacher {
 	private Character status;
 	@OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
 	private List<Student> students;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "dept_id")
+	private Department depts;
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "teacher_roles", joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
 	private List<Role> roles;

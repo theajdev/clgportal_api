@@ -1,5 +1,7 @@
 package com.aj.clgportal.dto;
 
+import com.aj.clgportal.entity.Department;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,4 +21,5 @@ public class StudentDto {
 	private String profilePic;
 	private Character status;
 	private TeacherDto teacher;
+	private long deptId;
 }

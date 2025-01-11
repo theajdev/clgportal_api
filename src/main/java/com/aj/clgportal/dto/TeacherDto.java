@@ -8,13 +8,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class TeacherDto {
-	private long id;
-	private String firstName;
-	private String middleName;
-	private String lastName;
-	private String username;
-	private String email;
-	private String password;
-	private String profilePic;
-	private Character status;
+	public long id;
+	public String firstName;
+	public String middleName;
+	public String lastName;
+	public String username;
+	public String email;
+	public String password;
+	public String profilePic;
+	public Character status;
+	private long deptId;
 }
