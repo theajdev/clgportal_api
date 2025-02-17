@@ -5,4 +5,5 @@ import com.aj.clgportal.dto.LoginDto;
 public interface AuthService {
 	//String register(RegisterDto registerDto);
     String login(LoginDto loginDto);
+    String getAuthority(LoginDto loginDto);
 }

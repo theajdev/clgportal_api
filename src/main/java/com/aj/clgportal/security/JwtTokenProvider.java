@@ -1,9 +1,11 @@
 package com.aj.clgportal.security;
 
+import java.util.Collection;
 import java.util.Date;
 import java.security.Key;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import com.aj.clgportal.exception.UserNameNotFoundException;

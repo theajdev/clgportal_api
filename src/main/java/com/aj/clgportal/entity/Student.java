@@ -58,4 +58,8 @@ public class Student {
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "student_roles", joinColumns = @JoinColumn(name = "student_id", referencedColumnName = "student_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
 	List<Role> roles;
+	@ManyToOne
+	@JoinColumn(name="guardian_notice_id")
+	private GuardianNotice guardianNotice;
+	
 }
