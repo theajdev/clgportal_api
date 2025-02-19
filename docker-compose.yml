@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:16
+    ports: 
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: clgportal
+      POSTGRES_USER: ajay
+      POSTGRES_PASSWORD: O5c9TYPE7gkvZXdgOvbfSaByJbCmfXmV
