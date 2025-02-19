@@ -8,3 +8,17 @@ services:
       POSTGRES_DB: clgportal
       POSTGRES_USER: ajay
       POSTGRES_PASSWORD: O5c9TYPE7gkvZXdgOvbfSaByJbCmfXmV
+
+  springboot-app:
+    image: clgportal
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clgportal
+      SPRING_DATASOURCE_USERNAME: ajay
+      SPRING_DATASOURCE_PASSWORD: O5c9TYPE7gkvZXdgOvbfSaByJbCmfXmV
+      APP_JWT_SECRET: f409d5d90aa7d3da2d851ae7f59180020ea9a3ce5a775171c7b1fe99bc78c41a
+      APP_JWT_EXPIRATION_MILLISECONDS: 2592000000
+    depends_on:
+      - postgres
