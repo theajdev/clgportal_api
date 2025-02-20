@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  postgres:
+  postgresql:
     image: postgres:16
     ports: 
       - "5432:5432"
@@ -8,17 +8,21 @@ services:
       POSTGRES_DB: clgportal
       POSTGRES_USER: ajay
       POSTGRES_PASSWORD: O5c9TYPE7gkvZXdgOvbfSaByJbCmfXmV
+    networks:
+      - clgportal-network  
 
-  springboot-app:
-    image: clgportal
-    build: .
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-cupe9hogph6c73duobd0-a.oregon-postgres.render.com/clgportal
-      SPRING_DATASOURCE_USERNAME: ajay
-      SPRING_DATASOURCE_PASSWORD: O5c9TYPE7gkvZXdgOvbfSaByJbCmfXmV
-      APP_JWT_SECRET: f409d5d90aa7d3da2d851ae7f59180020ea9a3ce5a775171c7b1fe99bc78c41a
-      APP_JWT_EXPIRATION_MILLISECONDS: 2592000000
-    depends_on:
-      - postgres
+  spring-boot-app:
+       build:
+          context: .
+       environment:
+         SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-cupe9hogph6c73duobd0-a.oregon-postgres.render.com/clgportal  # Connecting to the 'postgresql' service
+         SPRING_DATASOURCE_USERNAME: ajay
+         SPRING_DATASOURCE_PASSWORD: O5c9TYPE7gkvZXdgOvbfSaByJbCmfXmV
+       depends_on:
+         - postgresql
+       networks:
+         - clgportal-network
+
+networks:
+  clgportal-network:
+    driver: bridge
