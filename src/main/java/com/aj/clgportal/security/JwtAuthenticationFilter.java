@@ -2,6 +2,7 @@ package com.aj.clgportal.security;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,20 +18,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter  {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
 
 	private UserDetailsService userDetailsService;
 
-	public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService){
+	public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
 		this.jwtTokenProvider = jwtTokenProvider;
 		this.userDetailsService = userDetailsService;
 	}
 
 	private String getTokenFromRequest(HttpServletRequest request) {
 		String bearerToken = request.getHeader("Authorization");
-		
+
 		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
 			return bearerToken.substring(7, bearerToken.length());
 		}
