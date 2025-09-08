@@ -38,7 +38,7 @@ public class Student {
 	@Column(name = "last_name")
 	private String lastName;
 	@Column(name = "username")
-	private String userName;
+	private String username;
 	@Column(name = "email")
 	private String email;
 	@Column(name = "password")

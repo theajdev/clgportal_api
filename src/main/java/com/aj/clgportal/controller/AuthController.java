@@ -1,5 +1,5 @@
 package com.aj.clgportal.controller;
-
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aj.clgportal.dto.JwtAuthResponse;
 import com.aj.clgportal.dto.LoginDto;
+import com.aj.clgportal.dto.UserResponseDto;
 import com.aj.clgportal.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -20,20 +21,31 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/api/auth")
 public class AuthController {
 
+    private final DepartmentController departmentController;
+
+    private final ModelMapper ModelMapper;
+
 	@Autowired
 	private AuthService authServ;
+
+    AuthController(ModelMapper ModelMapper, DepartmentController departmentController) {
+        this.ModelMapper = ModelMapper;
+        this.departmentController = departmentController;
+    }
 
 	// build Login REST API
 	@PostMapping("/login")
 	public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto,HttpServletRequest request) {
-		String token = authServ.login(loginDto);
-		String authority=authServ.getAuthority(loginDto);
+		
+		UserResponseDto user = authServ.getUserDetailsByRole(loginDto);
+		
 		JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
-		jwtAuthResponse.setAccessToken(token);
-		jwtAuthResponse.setLoginId(loginDto.getUsernameOrEmail());
-		jwtAuthResponse.setAuthority(authority);
+		
+		jwtAuthResponse.setUser(user);
+		
 		HttpSession session=request.getSession();
 		session.setAttribute("usernameoremail",loginDto.getUsernameOrEmail());
+		
 		return new ResponseEntity<>(jwtAuthResponse, HttpStatus.OK);
 	}
 }

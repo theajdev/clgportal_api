@@ -51,7 +51,7 @@ public class StudentServiceImpl implements StudentService {
 		student.setFirstName(studDto.getFirstName());
 		student.setMiddleName(studDto.getMiddleName());
 		student.setLastName(studDto.getLastName());
-		student.setUserName(studDto.getUserName());
+		student.setUsername(studDto.getUserName());
 		student.setEmail(studDto.getEmail());
 		student.setPassword(studDto.getPassword());
 		student.setGuardianName(studDto.getGuardianName());
@@ -79,7 +79,7 @@ public class StudentServiceImpl implements StudentService {
 		student.setFirstName(studDto.getFirstName());
 		student.setMiddleName(studDto.getMiddleName());
 		student.setLastName(studDto.getLastName());
-		student.setUserName(studDto.getUserName());
+		student.setUsername(studDto.getUserName());
 		student.setEmail(studDto.getEmail());
 		student.setPassword(studDto.getPassword());
 		student.setGuardianName(studDto.getGuardianName());

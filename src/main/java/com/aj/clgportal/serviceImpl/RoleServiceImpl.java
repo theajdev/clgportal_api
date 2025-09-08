@@ -13,6 +13,8 @@ import com.aj.clgportal.exception.ResourceNotFoundException;
 import com.aj.clgportal.repository.RoleRepository;
 import com.aj.clgportal.service.RoleService;
 
+import jakarta.persistence.Query;
+import jakarta.persistence.EntityManager;
 @Service
 public class RoleServiceImpl implements RoleService {
 
@@ -46,7 +48,14 @@ public class RoleServiceImpl implements RoleService {
 	public void deleteUserType(long id) {
 		Role role = userTypeRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User type", "id", id));
 		userTypeRepo.delete(role);
+		// Get the max ID from the table (ignoring the deleted role)
+	    Long maxId = userTypeRepo.getMaxRoleId();
 
+	    // Set the sequence to the max ID or deletedId - 1
+	    long resetToId = (maxId != null) ? maxId : id - 1;
+
+	    // Reset the sequence in the repository
+	    int resetedId = userTypeRepo.resetRoleSequence(resetToId);
 	}
 
 	@Override
@@ -72,5 +81,4 @@ public class RoleServiceImpl implements RoleService {
 		Role role = modelMapper.map(roleDto, Role.class);
 		return role;
 	}
-
 }
