@@ -42,6 +42,8 @@ public class RoleController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ApiResponse> deleteUserType(@PathVariable long id) {
 		userTypeServ.deleteUserType(id);
+		Long maxRoleId = userTypeServ.getMaxRoleId();
+		userTypeServ.resetRoleSequence(maxRoleId+1);
 		return new ResponseEntity<>(new ApiResponse("User type deleted successfully.", true), HttpStatus.OK);
 	}
 	
@@ -55,5 +57,11 @@ public class RoleController {
 	public ResponseEntity<RoleDto> getUserType(@PathVariable long id){
 		RoleDto userType = userTypeServ.getUserTypeById(id);
 		return new ResponseEntity<>(userType,HttpStatus.OK);
+	}
+	
+	@GetMapping("/status/{status}")
+	public ResponseEntity<List<RoleDto>> getUserType(@PathVariable Character status){
+		List<RoleDto> userType = userTypeServ.getUserTypesByStatus(status);
+		return ResponseEntity.ok(userType);
 	}
 }

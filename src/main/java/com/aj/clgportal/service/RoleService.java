@@ -10,4 +10,7 @@ public interface RoleService {
 	public void deleteUserType(long id);
 	public RoleDto getUserTypeById(long id);
 	public List<RoleDto> getAllUserTypes();
+	public List<RoleDto> getUserTypesByStatus(Character str);
+	public Long getMaxRoleId();
+	public void resetRoleSequence(Long nextVal);
 }

@@ -1,5 +1,6 @@
 package com.aj.clgportal.serviceImpl;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,8 +14,9 @@ import com.aj.clgportal.exception.ResourceNotFoundException;
 import com.aj.clgportal.repository.RoleRepository;
 import com.aj.clgportal.service.RoleService;
 
-import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 @Service
 public class RoleServiceImpl implements RoleService {
 
@@ -26,8 +28,10 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public RoleDto createUserType(RoleDto roleDto) {
+		String roleDesc="ROLE_"+roleDto.getRoleDesc().toUpperCase();
 		Role role = new Role();
-		role.setRoleDesc(roleDto.getRoleDesc());
+		role.setRoleDesc(roleDesc);
+		role.setRoleDisp(roleDto.getRoleDesc().toUpperCase());
 		role.setStatus(roleDto.getStatus());
 		Role save = userTypeRepo.save(role);
 		RoleDto newUserType = UserTypeToDto(save);
@@ -36,8 +40,10 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public RoleDto updateUserType(RoleDto roleDto, long id) {
+		String roleDesc="ROLE_"+roleDto.getRoleDesc().toUpperCase();
 		Role role = userTypeRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User type", "id", id));
-		role.setRoleDesc(roleDto.getRoleDesc());
+		role.setRoleDesc(roleDesc);
+		role.setRoleDisp(roleDto.getRoleDesc().toUpperCase());
 		role.setStatus(roleDto.getStatus());
 		Role updatedUserType = userTypeRepo.save(role);
 		RoleDto usertype = UserTypeToDto(updatedUserType);
@@ -48,14 +54,6 @@ public class RoleServiceImpl implements RoleService {
 	public void deleteUserType(long id) {
 		Role role = userTypeRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User type", "id", id));
 		userTypeRepo.delete(role);
-		// Get the max ID from the table (ignoring the deleted role)
-	    Long maxId = userTypeRepo.getMaxRoleId();
-
-	    // Set the sequence to the max ID or deletedId - 1
-	    long resetToId = (maxId != null) ? maxId : id - 1;
-
-	    // Reset the sequence in the repository
-	    int resetedId = userTypeRepo.resetRoleSequence(resetToId);
 	}
 
 	@Override
@@ -69,9 +67,36 @@ public class RoleServiceImpl implements RoleService {
 	public List<RoleDto> getAllUserTypes() {
 		List<Role> list = userTypeRepo.findAll();
 		List<RoleDto> lst = list.stream().map(users -> UserTypeToDto(users)).collect(Collectors.toList());
+		lst.sort(Comparator.comparing(RoleDto::getId));
 		return lst;
 	}
+	
+	@Override
+	public List<RoleDto> getUserTypesByStatus(Character str) {
+		List<Role> list = userTypeRepo.findByStatus(str);
+		List<RoleDto> lst = list.stream().map(users -> UserTypeToDto(users)).collect(Collectors.toList());
+		lst.sort(Comparator.comparing(RoleDto::getId));
+		return lst;
+	}
+	
+	@Override
+	public Long getMaxRoleId() {
+		Long maxRoleId = userTypeRepo.findMaxRoleId();
+		return maxRoleId;
+	}
+	
+	@PersistenceContext
+	private EntityManager entityManager;
+	
+	@Transactional
+	@Override
+	public void resetRoleSequence(Long nextVal) {
+		String sql="ALTER SEQUENCE tbl_role_seq RESTART WITH "+nextVal;
+		
+		entityManager.createNativeQuery(sql).executeUpdate();
+	}
 
+	
 	public RoleDto UserTypeToDto(Role role) {
 		RoleDto roleDto = modelMapper.map(role, RoleDto.class);
 		return roleDto;

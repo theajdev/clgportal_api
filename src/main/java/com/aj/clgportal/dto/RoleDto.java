@@ -12,6 +12,7 @@ public class RoleDto {
 	@NotNull
 	@Size(min = 4,max = 20,message = "User Type must be contains minimum 4 characters.")
 	public String roleDesc;
+	private String roleDisp;
 	@NotNull
 	public Character status;
 }

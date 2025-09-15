@@ -25,6 +25,8 @@ public class Role {
 	private long id;
 	@Column(name = "role_desc", nullable = false, length = 20)
 	private String roleDesc;
+	@Column(name = "display_name", nullable = false, length = 20)
+	private String roleDisp;
 	@Column(name = "role_status", nullable = false, length = 1)
 	private Character status;
 }
