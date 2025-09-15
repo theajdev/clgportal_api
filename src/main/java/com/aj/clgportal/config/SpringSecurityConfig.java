@@ -39,10 +39,16 @@ public class SpringSecurityConfig {
 		return new BCryptPasswordEncoder(); // You can use other implementations if needed
 	}
 
+	public static final String[] PUBLIC_URLS = { "/","/api/auth/**", "/api/auth/register", "/v3/api-docs",
+			"/api-docs", "/v3/api-docs/**", "/v2/api-docs", "/swagger-resources/**", "/swagger-ui/**",
+			"/swagger-ui.html", "/webjars/**"
+
+	};
+	
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable()).authorizeHttpRequests((authorize) -> {
-			authorize.requestMatchers("/api/auth/**").permitAll();
+			authorize.requestMatchers(PUBLIC_URLS).permitAll();
 			authorize.requestMatchers("/api/admin/**").hasRole("ADMIN");
 			authorize.requestMatchers("/api/role/**").hasRole("ADMIN");
 			authorize.requestMatchers("/api/department/**").hasRole("ADMIN");
