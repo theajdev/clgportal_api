@@ -15,4 +15,6 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 	
 	@Query(value = "select COALESCE(max(r.role_id),0) from tbl_role r",nativeQuery = true)
 	Long findMaxRoleId();
+	
+	boolean existsByRoleDesc(String roleDesc);
 }

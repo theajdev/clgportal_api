@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.aj.clgportal.dto.RoleDto;
 import com.aj.clgportal.entity.Role;
 import com.aj.clgportal.exception.ResourceNotFoundException;
+import com.aj.clgportal.exception.RoleNameExistsException;
 import com.aj.clgportal.repository.RoleRepository;
 import com.aj.clgportal.service.RoleService;
 
@@ -28,6 +29,9 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public RoleDto createUserType(RoleDto roleDto) {
+		if(userTypeRepo.existsByRoleDesc(roleDto.getRoleDesc())) {
+			throw new RoleNameExistsException("User type already exists "+roleDto.getRoleDesc());
+		}else {
 		String roleDesc="ROLE_"+roleDto.getRoleDesc().toUpperCase();
 		Role role = new Role();
 		role.setRoleDesc(roleDesc);
@@ -36,6 +40,7 @@ public class RoleServiceImpl implements RoleService {
 		Role save = userTypeRepo.save(role);
 		RoleDto newUserType = UserTypeToDto(save);
 		return newUserType;
+		}
 	}
 
 	@Override

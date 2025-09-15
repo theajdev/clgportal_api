@@ -42,4 +42,14 @@ public class GlobalExceptionHandler {
 		});
 		return new ResponseEntity<Map<String, String>>(resp, HttpStatus.BAD_REQUEST);
 	}
+	
+	@ExceptionHandler(RoleNameExistsException.class)
+	public ResponseEntity<Map<String,Object>> handleRoleNameExistsException(RoleNameExistsException ex){
+		Map<String, Object> map=new HashMap<>();
+		map.put("error", "User type already exists.");
+		map.put("message", ex.getMessage());
+		map.put("status", HttpStatus.CONFLICT);
+		
+		return new ResponseEntity<>(map,HttpStatus.CONFLICT);
+	}
 }
