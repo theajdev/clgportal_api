@@ -6,4 +6,5 @@ import com.aj.clgportal.entity.Department;
 
 public interface DeptRespository extends JpaRepository<Department, Long> {
 
+	boolean existsByDeptDesc(String deptDesc);
 }
