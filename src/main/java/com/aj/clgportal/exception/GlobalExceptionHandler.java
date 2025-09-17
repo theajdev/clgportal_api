@@ -43,10 +43,10 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<Map<String, String>>(resp, HttpStatus.BAD_REQUEST);
 	}
 	
-	@ExceptionHandler(RoleNameExistsException.class)
-	public ResponseEntity<Map<String,Object>> handleRoleNameExistsException(RoleNameExistsException ex){
+	@ExceptionHandler(DuplicateResourceException.class)
+	public ResponseEntity<Map<String,Object>> handleRoleNameExistsException(DuplicateResourceException ex){
 		Map<String, Object> map=new HashMap<>();
-		map.put("error", "User type already exists.");
+		map.put("error", "Duplicate resourse already exists.");
 		map.put("message", ex.getMessage());
 		map.put("status", HttpStatus.CONFLICT);
 		

@@ -1,7 +1,5 @@
 package com.aj.clgportal.entity;
 
-import java.util.jar.Attributes.Name;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
