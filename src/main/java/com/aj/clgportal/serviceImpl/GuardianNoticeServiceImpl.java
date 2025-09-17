@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.aj.clgportal.dto.GuardianNoticeDto;
 import com.aj.clgportal.entity.GuardianNotice;
-import com.aj.clgportal.entity.Student;
 import com.aj.clgportal.exception.ResourceNotFoundException;
 import com.aj.clgportal.repository.GuardianNoticeRepos;
 import com.aj.clgportal.repository.StudentRepository;

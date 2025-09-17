@@ -1,7 +1,5 @@
 package com.aj.clgportal.dto;
 
-import com.aj.clgportal.entity.Department;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

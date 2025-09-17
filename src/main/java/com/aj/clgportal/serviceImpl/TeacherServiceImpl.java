@@ -2,7 +2,6 @@ package com.aj.clgportal.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.aj.clgportal.dto.DepartmentDto;
 import com.aj.clgportal.dto.TeacherDto;
 import com.aj.clgportal.entity.Department;
 import com.aj.clgportal.entity.Role;

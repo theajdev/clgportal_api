@@ -21,9 +21,11 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final DepartmentController departmentController;
+    @SuppressWarnings("unused")
+	private final DepartmentController departmentController;
 
-    private final ModelMapper ModelMapper;
+    @SuppressWarnings("unused")
+	private final ModelMapper ModelMapper;
 
 	@Autowired
 	private AuthService authServ;
