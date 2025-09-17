@@ -10,4 +10,7 @@ public interface DeptService {
 	public void deleteDepartment(long id);
 	public DepartmentDto getDepartmentById(long id);
 	public List<DepartmentDto> getAllDepartments();
+	public Long getMaxDeptId();
+	public void resetDeptSequence(Long nextVal);
+	public List<DepartmentDto> getDeptByStatus(Character status);
 }

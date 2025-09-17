@@ -1,5 +1,6 @@
 package com.aj.clgportal.serviceImpl;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,10 @@ import com.aj.clgportal.exception.DuplicateResourceException;
 import com.aj.clgportal.exception.ResourceNotFoundException;
 import com.aj.clgportal.repository.DeptRespository;
 import com.aj.clgportal.service.DeptService;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 @Service
 public class DeptServiceImpl implements DeptService {
@@ -54,7 +59,24 @@ public class DeptServiceImpl implements DeptService {
 				.orElseThrow(() -> new ResourceNotFoundException("Department", "department id", id));
 		deptRepo.delete(dept);
 	}
+	
+	@Override
+	public Long getMaxDeptId() {
+		Long maxDeptId = deptRepo.findMaxDeptId();
+		return maxDeptId;
+	}
+	
+	@PersistenceContext
+	private EntityManager entityManager;
+	
+	@Transactional
+	@Override
+	public void resetDeptSequence(Long nextVal) {
+		String sql = "ALTER SEQUENCE tbl_dept_seq RESTART WITH " + nextVal;
 
+		entityManager.createNativeQuery(sql).executeUpdate();
+	}
+	
 	@Override
 	public DepartmentDto getDepartmentById(long id) {
 		Department dept = deptRepo.findById(id)
@@ -67,6 +89,7 @@ public class DeptServiceImpl implements DeptService {
 	public List<DepartmentDto> getAllDepartments() {
 		List<Department> depts = deptRepo.findAll();
 		List<DepartmentDto> lst = depts.stream().map((list) -> deptToDto(list)).collect(Collectors.toList());
+		lst.sort(Comparator.comparing(DepartmentDto::getId));
 		return lst;
 	}
 
@@ -78,6 +101,14 @@ public class DeptServiceImpl implements DeptService {
 	public Department dtoToDept(DepartmentDto deptDto) {
 		Department dept = modelMapper.map(deptDto, Department.class);
 		return dept;
+	}
+
+	@Override
+	public List<DepartmentDto> getDeptByStatus(Character status) {
+		List<Department> depts = deptRepo.findByStatus(status);
+		List<DepartmentDto> lst = depts.stream().map((list) -> deptToDto(list)).collect(Collectors.toList());
+		lst.sort(Comparator.comparing(DepartmentDto::getId));
+		return lst;
 	}
 
 }

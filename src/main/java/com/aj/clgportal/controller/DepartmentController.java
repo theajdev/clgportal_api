@@ -40,6 +40,8 @@ public class DepartmentController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ApiResponse> deleteDepartment(@PathVariable long id) {
 		deptServ.deleteDepartment(id);
+		Long maxDeptId = deptServ.getMaxDeptId();
+		deptServ.resetDeptSequence(maxDeptId+1);
 		return new ResponseEntity<ApiResponse>(new ApiResponse("Department deleted successfully.", true),
 				HttpStatus.OK);
 	}
@@ -54,5 +56,11 @@ public class DepartmentController {
 	public ResponseEntity<List<DepartmentDto>> getAllDepartments() {
 		List<DepartmentDto> allDepartments = deptServ.getAllDepartments();
 		return ResponseEntity.ok(allDepartments);
+	}
+	
+	@GetMapping("/status/{status}")
+	public ResponseEntity<List<DepartmentDto>> getDeptByStatus(@PathVariable Character status){
+		List<DepartmentDto> depts = deptServ.getDeptByStatus(status);
+		return ResponseEntity.ok(depts);
 	}
 }
