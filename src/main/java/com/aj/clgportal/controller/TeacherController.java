@@ -26,7 +26,7 @@ public class TeacherController {
 	TeacherService teacherServ;
 	
 	@PostMapping("/")
-	public ResponseEntity<TeacherDto> newTeacher(TeacherDto teacherDto){
+	public ResponseEntity<TeacherDto> newTeacher(@RequestBody TeacherDto teacherDto){
 		TeacherDto teacher = teacherServ.newTeacher(teacherDto);
 		return new ResponseEntity<TeacherDto>(teacher,HttpStatus.CREATED);
 	}
