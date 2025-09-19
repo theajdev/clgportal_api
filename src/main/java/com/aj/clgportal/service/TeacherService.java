@@ -10,5 +10,7 @@ public interface TeacherService {
 	public void deleteTeacher(long id);
 	public TeacherDto getTeacherById(long id);
 	public List<TeacherDto> getAllTeachers();
-	
+	public void removeTeacherRole(Long id);
+	public Long getMaxTeacherId();
+	public void resetTeacherSequence(Long nextVal);
 }

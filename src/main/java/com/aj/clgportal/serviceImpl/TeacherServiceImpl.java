@@ -19,6 +19,9 @@ import com.aj.clgportal.repository.RoleRepository;
 import com.aj.clgportal.repository.TeacherRepository;
 import com.aj.clgportal.service.TeacherService;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -121,6 +124,31 @@ public class TeacherServiceImpl implements TeacherService {
 		});
 		return lst;
 	}
+	
+	@Override
+	public Long getMaxTeacherId() {
+		Long maxRoleId = teacherRepo.findMaxTeacherId();
+		return maxRoleId;
+	}
+
+	@PersistenceContext
+	private EntityManager entityManager;
+	
+	@Transactional
+	@Override
+	public void resetTeacherSequence(Long nextVal) {
+	    String sql = "ALTER SEQUENCE tbl_teacher_seq RESTART WITH " + nextVal;
+	    entityManager.createNativeQuery(sql).executeUpdate();
+	}
+	
+	@Transactional
+	@Override
+	public void removeTeacherRole(Long id) {
+		String sql = "DELETE FROM teacher_roles WHERE teacher_id = :teacherId";
+	    entityManager.createNativeQuery(sql)
+	        .setParameter("teacherId", id)
+	        .executeUpdate();
+	}
 
 	public TeacherDto TeacherToDto(Teacher teacher) {
 		TeacherDto teacherDto = modelMapper.map(teacher, TeacherDto.class);
@@ -131,5 +159,4 @@ public class TeacherServiceImpl implements TeacherService {
 		Teacher teacher = modelMapper.map(teacherDto, Teacher.class);
 		return teacher;
 	}
-
 }

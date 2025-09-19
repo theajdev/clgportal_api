@@ -39,7 +39,10 @@ public class TeacherController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ApiResponse> deleteTeacher(@PathVariable long id){
+		teacherServ.removeTeacherRole(id);
 		teacherServ.deleteTeacher(id);
+		Long maxTeacherId = teacherServ.getMaxTeacherId();
+		teacherServ.resetTeacherSequence(maxTeacherId);
 		return new ResponseEntity<ApiResponse>(new ApiResponse("Teacher deleted successfully.", true),HttpStatus.OK);
 	}
 	
