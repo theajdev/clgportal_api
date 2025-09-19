@@ -1,6 +1,7 @@
 package com.aj.clgportal.serviceImpl;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.aj.clgportal.dto.RoleDto;
 import com.aj.clgportal.dto.TeacherDto;
 import com.aj.clgportal.entity.Department;
 import com.aj.clgportal.entity.Role;
@@ -136,7 +138,7 @@ public class TeacherServiceImpl implements TeacherService {
 	
 	@Transactional
 	@Override
-	public void resetTeacherSequence(Long nextVal) {
+	public void resetTeacherSequence(Long nextVal) { 
 	    String sql = "ALTER SEQUENCE tbl_teacher_seq RESTART WITH " + nextVal;
 	    entityManager.createNativeQuery(sql).executeUpdate();
 	}
@@ -148,6 +150,22 @@ public class TeacherServiceImpl implements TeacherService {
 	    entityManager.createNativeQuery(sql)
 	        .setParameter("teacherId", id)
 	        .executeUpdate();
+	}
+	
+	@Override
+	public List<TeacherDto> getTeacherByStatus(Character status) {
+		List<Teacher> list = teacherRepo.findByStatus(status);
+		List<TeacherDto> lst = list.stream().map(teacher -> TeacherToDto(teacher)).collect(Collectors.toList());
+		
+		list.forEach(teacher -> {
+			// Assuming getDepts() returns a Department object and getId() returns the
+			// department ID
+			lst.forEach(teachDto -> {
+				teachDto.setDeptId(teacher.getDepts().getId());
+			});
+		});
+		lst.sort(Comparator.comparing(TeacherDto::getId));
+		return lst;
 	}
 
 	public TeacherDto TeacherToDto(Teacher teacher) {

@@ -57,4 +57,10 @@ public class TeacherController {
 		List<TeacherDto> allTeachers = teacherServ.getAllTeachers();
 		return ResponseEntity.ok(allTeachers);
 	}
+	
+	@GetMapping("/status/{status}")
+	public ResponseEntity<List<TeacherDto>> getTeacherByStatus(@PathVariable Character status){
+		List<TeacherDto> teachers = teacherServ.getTeacherByStatus(status);
+		return ResponseEntity.ok(teachers);
+	}
 }

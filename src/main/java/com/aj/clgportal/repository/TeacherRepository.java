@@ -17,7 +17,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
 	Boolean existsByUsername(String username);
 	
-	List<Teacher> findByStatus(Character str);
+	List<Teacher> findByStatus(Character status);
 	
 	@Query(value = "select COALESCE(max(t.teacher_id),0) from tbl_teacher t",nativeQuery = true)
 	Long findMaxTeacherId();

@@ -13,4 +13,5 @@ public interface TeacherService {
 	public void removeTeacherRole(Long id);
 	public Long getMaxTeacherId();
 	public void resetTeacherSequence(Long nextVal);
+	public List<TeacherDto> getTeacherByStatus(Character status);
 }
