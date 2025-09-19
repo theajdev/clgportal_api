@@ -42,7 +42,7 @@ public class TeacherController {
 		teacherServ.removeTeacherRole(id);
 		teacherServ.deleteTeacher(id);
 		Long maxTeacherId = teacherServ.getMaxTeacherId();
-		teacherServ.resetTeacherSequence(maxTeacherId);
+		teacherServ.resetTeacherSequence(maxTeacherId+1);
 		return new ResponseEntity<ApiResponse>(new ApiResponse("Teacher deleted successfully.", true),HttpStatus.OK);
 	}
 	
