@@ -52,6 +52,7 @@ public class SpringSecurityConfig {
 			authorize.requestMatchers("/api/admin/**").hasRole("ADMIN");
 			authorize.requestMatchers("/api/role/**").hasRole("ADMIN");
 			authorize.requestMatchers("/api/department/**").hasRole("ADMIN");
+			authorize.requestMatchers("/api/notice/**").hasRole("ADMIN");
 			authorize.requestMatchers(HttpMethod.POST, "/api/teacher/**").hasRole("ADMIN");
 			authorize.requestMatchers(HttpMethod.PUT, "/api/teacher/**").hasRole("ADMIN");
 			authorize.requestMatchers(HttpMethod.GET, "/api/teacher/**").hasAnyRole("ADMIN", "TEACHER");
