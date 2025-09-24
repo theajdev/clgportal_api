@@ -13,7 +13,7 @@ public class ClgportalApplication {
 	}
 	
 	@Bean
-	public ModelMapper ModelMapper() {
+	ModelMapper ModelMapper() {
 		return new ModelMapper();
 	}
 
