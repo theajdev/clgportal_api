@@ -37,4 +37,6 @@ public class Department {
 	private List<Teacher> teachers;
 	@OneToMany(mappedBy = "depts", cascade = CascadeType.ALL)
 	private List<Student> students;
+	@OneToMany(mappedBy = "depts", cascade = CascadeType.ALL)
+	private List<Notice> notice;
 }
