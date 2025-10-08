@@ -176,4 +176,10 @@ public class TeacherServiceImpl implements TeacherService {
 		Teacher teacher = modelMapper.map(teacherDto, Teacher.class);
 		return teacher;
 	}
+
+	@Override
+	public Long getTeacherCount(Character status) {
+		Long teacherCount = teacherRepo.countByStatus(status);
+		return teacherCount;
+	}
 }

@@ -22,4 +22,6 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 	@Query(value = "select COALESCE(max(t.teacher_id),0) from tbl_teacher t",nativeQuery = true)
 	Long findMaxTeacherId();
 	
+	Long countByStatus(Character status);
+	
 }
