@@ -11,5 +11,4 @@ public class DepartmentDto {
 	private Character status;
 	private StudentDto student;
 	private TeacherDto teacher;
-	
 }

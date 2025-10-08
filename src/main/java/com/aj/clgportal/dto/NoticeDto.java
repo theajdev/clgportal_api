@@ -1,5 +1,7 @@
 package com.aj.clgportal.dto;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,5 +14,5 @@ public class NoticeDto {
 	private String noticeTitle;
 	private String noticeDesc;
 	private Character status;
-	private long deptId;
+	private List<Long> deptId;
 }

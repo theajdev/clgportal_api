@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -37,6 +38,6 @@ public class Department {
 	private List<Teacher> teachers;
 	@OneToMany(mappedBy = "depts", cascade = CascadeType.ALL)
 	private List<Student> students;
-	@OneToMany(mappedBy = "depts", cascade = CascadeType.ALL)
-	private List<Notice> notice;
+	@ManyToMany(mappedBy = "depts", cascade = CascadeType.ALL)
+	private List<Notice> notices;
 }
