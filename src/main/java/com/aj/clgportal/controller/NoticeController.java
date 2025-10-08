@@ -42,6 +42,7 @@ public class NoticeController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ApiResponse> deleteNotice(@PathVariable Long id){
+		noticeServ.removeDepartmentNotice(id);
 		noticeServ.removeNotice(id);
 		Long maxNoticeId = noticeServ.getMaxNoticeId();
 		noticeServ.resetNoticeSequence(maxNoticeId+1);
@@ -64,5 +65,11 @@ public class NoticeController {
 	public ResponseEntity<List<NoticeDto>> getAllNotices(@PathVariable Character status){
 		List<NoticeDto> notices = noticeServ.getNoticeByStatus(status);
 		return ResponseEntity.ok(notices);
+	}
+	
+	@GetMapping("/count")
+	public ResponseEntity<String> getNoticeCount(){
+		Long countOfNotice = noticeServ.getCountOfNotice('V');
+		return ResponseEntity.ok(String.format("%02d", countOfNotice));
 	}
 }

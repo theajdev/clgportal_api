@@ -15,4 +15,6 @@ public interface DeptRespository extends JpaRepository<Department, Long> {
 	
 	@Query(value = "select COALESCE(max(d.dept_id),0) from tbl_department d",nativeQuery = true)
 	Long findMaxDeptId();
+	
+	Long countByStatus(Character status);
 }

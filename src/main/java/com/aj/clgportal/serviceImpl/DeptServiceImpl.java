@@ -111,4 +111,11 @@ public class DeptServiceImpl implements DeptService {
 		return lst;
 	}
 
+	@Override
+	public Long getDeptCount(Character status) {
+		status='V';
+		Long deptCount = deptRepo.countByStatus(status);
+		return deptCount;
+	}
+
 }

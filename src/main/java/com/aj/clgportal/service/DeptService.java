@@ -13,4 +13,5 @@ public interface DeptService {
 	public Long getMaxDeptId();
 	public void resetDeptSequence(Long nextVal);
 	public List<DepartmentDto> getDeptByStatus(Character status);
+	public Long getDeptCount(Character status);
 }

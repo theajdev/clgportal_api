@@ -13,4 +13,6 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 	Long findMaxNoticeId();
 	
 	List<Notice> findByStatus(Character status);
+	
+	long countByStatus(Character status);
 }
