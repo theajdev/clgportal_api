@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.aj.clgportal.dto.ApiResponse;
 import com.aj.clgportal.dto.DepartmentDto;
 import com.aj.clgportal.service.DeptService;
@@ -41,7 +40,7 @@ public class DepartmentController {
 	public ResponseEntity<ApiResponse> deleteDepartment(@PathVariable long id) {
 		deptServ.deleteDepartment(id);
 		Long maxDeptId = deptServ.getMaxDeptId();
-		deptServ.resetDeptSequence(maxDeptId+1);
+		deptServ.resetDeptSequence(maxDeptId + 1);
 		return new ResponseEntity<ApiResponse>(new ApiResponse("Department deleted successfully.", true),
 				HttpStatus.OK);
 	}
@@ -57,10 +56,16 @@ public class DepartmentController {
 		List<DepartmentDto> allDepartments = deptServ.getAllDepartments();
 		return ResponseEntity.ok(allDepartments);
 	}
-	
+
 	@GetMapping("/status/{status}")
-	public ResponseEntity<List<DepartmentDto>> getDeptByStatus(@PathVariable Character status){
+	public ResponseEntity<List<DepartmentDto>> getDeptByStatus(@PathVariable Character status) {
 		List<DepartmentDto> depts = deptServ.getDeptByStatus(status);
 		return ResponseEntity.ok(depts);
+	}
+
+	@GetMapping("/count")
+	public ResponseEntity<String> getDeptCount() {
+		Long deptCount = deptServ.getDeptCount('V');
+		return ResponseEntity.ok(String.format("%02d", deptCount));
 	}
 }
