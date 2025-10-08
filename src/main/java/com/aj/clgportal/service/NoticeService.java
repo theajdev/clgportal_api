@@ -13,4 +13,6 @@ public interface NoticeService {
 	public Long getMaxNoticeId();
 	public void resetNoticeSequence(Long id);
 	public List<NoticeDto> getNoticeByStatus(Character status);
+	public void removeDepartmentNotice(Long id);
+	public Long getCountOfNotice(Character status); 
 }

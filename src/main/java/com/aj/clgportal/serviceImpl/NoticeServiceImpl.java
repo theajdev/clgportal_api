@@ -18,6 +18,7 @@ import com.aj.clgportal.service.NoticeService;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -43,15 +44,14 @@ public class NoticeServiceImpl implements NoticeService {
 		if (noticeRepo.existsByNoticeTitle(dto.getNoticeTitle())) {
 			throw new DuplicateResourceException(dto.getNoticeTitle() + " notice already exists.");
 		} else {
-			Department department = deptRepo.findById(dto.getDeptId()).orElseThrow(
-					() -> new ResourceNotFoundException("Department", "department id", dto.getDeptId()));
-
+			List<Department> departments = deptRepo.findAllById(dto.getDeptId());
+			
 			Notice notice = new Notice();
 			notice.setNoticeTitle(dto.getNoticeTitle());
 			notice.setNoticeDesc(dto.getNoticeDesc());
 			notice.setStatus(dto.getStatus());
-			notice.setDepts(department);
-			dto.setDeptId(department.getId());
+			notice.setDepts(departments);
+			dto.setDeptId(dto.getDeptId());
 			Notice newNotice = noticeRepo.save(notice);
 			NoticeDto noticeDto = noticeToDto(newNotice);
 			return noticeDto;
@@ -60,23 +60,19 @@ public class NoticeServiceImpl implements NoticeService {
 
 	@Override
 	public NoticeDto updateNotice(NoticeDto dto, Long id) {
-		if (noticeRepo.existsByNoticeTitle(dto.getNoticeTitle())) {
-			throw new DuplicateResourceException(dto.getNoticeTitle() + " notice already exists.");
-		} else {
-			Department department = deptRepo.findById(dto.getDeptId()).orElseThrow(
-					() -> new ResourceNotFoundException("Department", "department id", dto.getDeptId()));
+		
+			List<Department> departments = deptRepo.findAllById(dto.getDeptId());
 			
 			Notice notice = noticeRepo.findById(id)
 					.orElseThrow(() -> new ResourceNotFoundException("notice", "notice id", id));
 			notice.setNoticeTitle(dto.getNoticeTitle());
 			notice.setNoticeDesc(dto.getNoticeDesc());
 			notice.setStatus(dto.getStatus());
-			notice.setDepts(department);
-			dto.setDeptId(notice.getDepts().getId());
+			notice.setDepts(departments);
+			dto.setDeptId(dto.getDeptId());
 			Notice updatedNotice = noticeRepo.save(notice);
 			NoticeDto noticeDto = noticeToDto(updatedNotice);
 			return noticeDto;
-		}
 	}
 
 	@Override
@@ -88,56 +84,95 @@ public class NoticeServiceImpl implements NoticeService {
 
 	@Override
 	public NoticeDto getNoticeById(Long id) {
-		Notice notice = noticeRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("notice", "notice id", id));
-		NoticeDto noticeDto = noticeToDto(notice);
-		noticeDto.setDeptId(notice.getDepts().getId());
-		return noticeDto;
+	    Notice notice = noticeRepo.findById(id)
+	        .orElseThrow(() -> new ResourceNotFoundException("Notice", "notice id", id));
+	    
+	    return noticeToDto(notice); // All deptIds already handled in this method
 	}
+
 
 	@Override
 	public List<NoticeDto> getAllNotices() {
-		List<Notice> notices = noticeRepo.findAll();
-		List<NoticeDto> allNotices = notices.stream().map((list)->noticeToDto(list)).collect(Collectors.toList());
-		notices.forEach(notice->{
-			allNotices.forEach(noticeDto->{
-				noticeDto.setDeptId(notice.getDepts().getId());
-			});
-		});
-		return allNotices;
+	    List<Notice> notices = noticeRepo.findAll();
+	    return notices.stream()
+	                  .map(this::noticeToDto)
+	                  .collect(Collectors.toList());
 	}
 	
 	@Override
 	public Long getMaxNoticeId() {
 		Long maxNoticeId = noticeRepo.findMaxNoticeId();
-		System.out.println("maxNoticeId: "+maxNoticeId);
 		return maxNoticeId;
 	}
 
+	@Transactional
 	@Override
 	public void resetNoticeSequence(Long id) {
 		String sql = "ALTER SEQUENCE tbl_notice_seq RESTART WITH " + id;
 		entityManager.createNativeQuery(sql).executeUpdate();
 	}
 	
+	@Transactional
+	@Override
+	public void removeDepartmentNotice(Long id) {
+		String sql = "DELETE FROM tbl_notice_department WHERE notice_id = :noticeId";
+	    entityManager.createNativeQuery(sql)
+	        .setParameter("noticeId", id)
+	        .executeUpdate();
+	}
+	
 	@Override
 	public List<NoticeDto> getNoticeByStatus(Character status) {
-		List<Notice> list = noticeRepo.findByStatus(status);
-		List<NoticeDto> notices = list.stream().map((lst)->noticeToDto(lst)).collect(Collectors.toList());
-		list.forEach(notice->{
-			notices.forEach(noticeDto->{
-				noticeDto.setDeptId(notice.getDepts().getId());
-			});
-		});
-		return notices;
+		 List<Notice> list = noticeRepo.findByStatus(status);
+		    return list.stream()
+		               .map(this::noticeToDto)
+		               .collect(Collectors.toList());
 	}
 
 	public NoticeDto noticeToDto(Notice notice) {
-		NoticeDto noticeDto = modelMapper.map(notice, NoticeDto.class);
-		return noticeDto;
+	    NoticeDto dto = new NoticeDto();
+	    dto.setId(notice.getId());
+	    dto.setNoticeTitle(notice.getNoticeTitle());
+	    dto.setNoticeDesc(notice.getNoticeDesc());
+	    dto.setStatus(notice.getStatus());
+
+	    if (notice.getDepts() != null) {
+	        dto.setDeptId(
+	            notice.getDepts()
+	                  .stream()
+	                  .map(Department::getId) // Assuming Department has getId()
+	                  .collect(Collectors.toList())
+	        );
+	    }
+	    return dto;
 	}
 
 	public Notice dtoToNotice(NoticeDto dto) {
-		Notice notice = modelMapper.map(dto, Notice.class);
-		return notice;
+	    Notice notice = new Notice();
+	    notice.setId(dto.getId());
+	    notice.setNoticeTitle(dto.getNoticeTitle());
+	    notice.setNoticeDesc(dto.getNoticeDesc());
+	    notice.setStatus(dto.getStatus());
+
+	    if (dto.getDeptId() != null) {
+	        List<Department> departments = dto.getDeptId().stream()
+	            .map(id -> {
+	                Department d = new Department();
+	                d.setId(id);
+	                return d;
+	            })
+	            .collect(Collectors.toList());
+	        notice.setDepts(departments);
+	    }
+	    return notice;
 	}
+
+	@Override
+	public Long getCountOfNotice(Character status) {
+		long validNotices = noticeRepo.countByStatus(status);
+		
+		return validNotices;
+		
+	}
+
 }
