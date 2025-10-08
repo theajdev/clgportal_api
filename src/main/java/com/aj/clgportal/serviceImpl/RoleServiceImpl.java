@@ -119,4 +119,10 @@ public class RoleServiceImpl implements RoleService {
 		Role role = modelMapper.map(roleDto, Role.class);
 		return role;
 	}
+
+	@Override
+	public Long getRoleCount(Character status) {
+		Long RoleCount = userTypeRepo.countByStatus(status);
+		return RoleCount;
+	}
 }

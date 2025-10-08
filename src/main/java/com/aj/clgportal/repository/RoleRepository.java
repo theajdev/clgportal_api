@@ -17,4 +17,6 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 	Long findMaxRoleId();
 	
 	boolean existsByRoleDesc(String roleDesc);
+	
+	Long countByStatus(Character status);
 }

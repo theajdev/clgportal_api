@@ -13,4 +13,5 @@ public interface RoleService {
 	public List<RoleDto> getUserTypesByStatus(Character str);
 	public Long getMaxRoleId();
 	public void resetRoleSequence(Long nextVal);
+	public Long getRoleCount(Character status);
 }
