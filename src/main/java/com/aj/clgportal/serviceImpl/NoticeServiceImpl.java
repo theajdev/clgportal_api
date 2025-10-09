@@ -1,5 +1,8 @@
 package com.aj.clgportal.serviceImpl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,11 +49,25 @@ public class NoticeServiceImpl implements NoticeService {
 		} else {
 			List<Department> departments = deptRepo.findAllById(dto.getDeptId());
 			
+			Date currentDate = new Date();
+	        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+	        String formattedDate = formatter.format(currentDate);
+	        
+	        Date postedDate=null;
+			try {
+				postedDate = formatter.parse(formattedDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        
 			Notice notice = new Notice();
 			notice.setNoticeTitle(dto.getNoticeTitle());
 			notice.setNoticeDesc(dto.getNoticeDesc());
 			notice.setStatus(dto.getStatus());
 			notice.setDepts(departments);
+			notice.setPostedOn(postedDate);
+			notice.setUpdatedOn(null);
 			dto.setDeptId(dto.getDeptId());
 			Notice newNotice = noticeRepo.save(notice);
 			NoticeDto noticeDto = noticeToDto(newNotice);
@@ -63,12 +80,26 @@ public class NoticeServiceImpl implements NoticeService {
 		
 			List<Department> departments = deptRepo.findAllById(dto.getDeptId());
 			
+			Date currentDate = new Date();
+	        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+	        String formattedDate = formatter.format(currentDate);
+	        
+	        Date updatedDate=null;
+			try {
+				updatedDate = formatter.parse(formattedDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			Notice notice = noticeRepo.findById(id)
 					.orElseThrow(() -> new ResourceNotFoundException("notice", "notice id", id));
 			notice.setNoticeTitle(dto.getNoticeTitle());
 			notice.setNoticeDesc(dto.getNoticeDesc());
 			notice.setStatus(dto.getStatus());
 			notice.setDepts(departments);
+			notice.setPostedOn(dto.getPostedOn());
+			notice.setUpdatedOn(updatedDate);
 			dto.setDeptId(dto.getDeptId());
 			Notice updatedNotice = noticeRepo.save(notice);
 			NoticeDto noticeDto = noticeToDto(updatedNotice);
@@ -135,7 +166,8 @@ public class NoticeServiceImpl implements NoticeService {
 	    dto.setNoticeTitle(notice.getNoticeTitle());
 	    dto.setNoticeDesc(notice.getNoticeDesc());
 	    dto.setStatus(notice.getStatus());
-
+	    dto.setPostedOn(notice.getPostedOn());
+	    dto.setUpdatedOn(notice.getUpdatedOn());
 	    if (notice.getDepts() != null) {
 	        dto.setDeptId(
 	            notice.getDepts()
@@ -153,7 +185,8 @@ public class NoticeServiceImpl implements NoticeService {
 	    notice.setNoticeTitle(dto.getNoticeTitle());
 	    notice.setNoticeDesc(dto.getNoticeDesc());
 	    notice.setStatus(dto.getStatus());
-
+	    notice.setPostedOn(dto.getPostedOn());
+	    notice.setUpdatedOn(notice.getUpdatedOn());
 	    if (dto.getDeptId() != null) {
 	        List<Department> departments = dto.getDeptId().stream()
 	            .map(id -> {

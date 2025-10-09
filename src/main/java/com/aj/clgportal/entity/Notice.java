@@ -1,5 +1,6 @@
 package com.aj.clgportal.entity;
 
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -46,4 +47,8 @@ public class Notice {
 	    inverseJoinColumns = @JoinColumn(name = "dept_id")
 	)
 	private List<Department> depts;
+	@Column(name="posted_on")
+	private Date postedOn;
+	@Column(name="updated_on")
+	private Date updatedOn;
 }

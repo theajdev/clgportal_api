@@ -1,5 +1,6 @@
 package com.aj.clgportal.dto;
 
+import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -15,4 +16,6 @@ public class NoticeDto {
 	private String noticeDesc;
 	private Character status;
 	private List<Long> deptId;
+	private Date postedOn;
+	private Date updatedOn;
 }
