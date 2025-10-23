@@ -64,8 +64,8 @@ public class DepartmentController {
 	}
 
 	@GetMapping("/count")
-	public ResponseEntity<String> getDeptCount() {
+	public ResponseEntity<Long> getDeptCount() {
 		Long deptCount = deptServ.getDeptCount('V');
-		return ResponseEntity.ok(String.format("%02d", deptCount));
+		return ResponseEntity.ok(deptCount);
 	}
 }

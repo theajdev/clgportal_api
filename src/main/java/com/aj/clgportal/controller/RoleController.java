@@ -66,8 +66,8 @@ public class RoleController {
 	}
 	
 	@GetMapping("/count")
-	public ResponseEntity<String> getRoleCount(){
+	public ResponseEntity<Long> getRoleCount(){
 		Long roleCount = userTypeServ.getRoleCount('V');
-		return ResponseEntity.ok(String.format("%02d", roleCount));
+		return ResponseEntity.ok(roleCount);
 	} 
 }

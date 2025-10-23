@@ -68,8 +68,8 @@ public class NoticeController {
 	}
 	
 	@GetMapping("/count")
-	public ResponseEntity<String> getNoticeCount(){
+	public ResponseEntity<Long> getNoticeCount(){
 		Long countOfNotice = noticeServ.getCountOfNotice('V');
-		return ResponseEntity.ok(String.format("%02d", countOfNotice));
+		return ResponseEntity.ok(countOfNotice);
 	}
 }

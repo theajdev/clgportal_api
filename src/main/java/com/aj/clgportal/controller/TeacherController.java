@@ -65,8 +65,8 @@ public class TeacherController {
 	}
 	
 	@GetMapping("/count")
-	public ResponseEntity<String> getTeacherCount(){
+	public ResponseEntity<Long> getTeacherCount(){
 		Long teacherCount = teacherServ.getTeacherCount('V');
-		return ResponseEntity.ok(String.format("%02d", teacherCount));
+		return ResponseEntity.ok(teacherCount);
 	}
 }
