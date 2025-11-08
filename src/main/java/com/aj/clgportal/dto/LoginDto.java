@@ -13,4 +13,5 @@ public class LoginDto {
 	private String usernameOrEmail;
     private String password;
     private String authority;
+    private String recaptchaToken; // token from frontend
 }

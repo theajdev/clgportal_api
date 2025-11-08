@@ -13,6 +13,8 @@ import com.aj.clgportal.dto.JwtAuthResponse;
 import com.aj.clgportal.dto.LoginDto;
 import com.aj.clgportal.dto.UserResponseDto;
 import com.aj.clgportal.service.AuthService;
+import com.aj.clgportal.service.CaptchaService;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -29,6 +31,9 @@ public class AuthController {
 
 	@Autowired
 	private AuthService authServ;
+	
+	@Autowired
+    private CaptchaService captchaService;
 
     AuthController(ModelMapper ModelMapper, DepartmentController departmentController) {
         this.ModelMapper = ModelMapper;
@@ -37,7 +42,14 @@ public class AuthController {
 
 	// build Login REST API
 	@PostMapping("/login")
-	public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto,HttpServletRequest request) {
+	public ResponseEntity<?> login(@RequestBody LoginDto loginDto,HttpServletRequest request) {
+		
+		boolean captchaVerified = captchaService.verifyCaptcha(loginDto.getRecaptchaToken());
+		 if (!captchaVerified) {
+		        return ResponseEntity
+		            .status(HttpStatus.BAD_REQUEST)
+		            .body("Captcha verification failed. Please try again.");
+		    }
 		
 		UserResponseDto user = authServ.getUserDetailsByRole(loginDto);
 		
