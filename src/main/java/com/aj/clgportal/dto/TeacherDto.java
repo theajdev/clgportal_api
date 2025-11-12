@@ -12,6 +12,8 @@ public class TeacherDto {
 	public String firstName;
 	public String middleName;
 	public String lastName;
+	public long mobileNo;
+	public String address;
 	public String username;
 	public String email;
 	public String password;

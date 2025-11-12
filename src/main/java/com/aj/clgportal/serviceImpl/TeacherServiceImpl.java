@@ -51,6 +51,8 @@ public class TeacherServiceImpl implements TeacherService {
 		teacher.setFirstName(teacherDto.getFirstName());
 		teacher.setMiddleName(teacherDto.getMiddleName());
 		teacher.setLastName(teacherDto.getLastName());
+		teacher.setMobileNo(teacherDto.getMobileNo());
+		teacher.setAddress(teacherDto.getAddress());
 		teacher.setEmail(teacherDto.getEmail());
 		teacher.setUsername(teacherDto.getUsername());
 		teacher.setPassword(passwordEncoder.encode(teacherDto.getPassword()));
@@ -74,13 +76,20 @@ public class TeacherServiceImpl implements TeacherService {
 				() -> new ResourceNotFoundException("Department", "department id", teacherDto.getDeptId()));
 		Teacher teacher = teacherRepo.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Teacher", "teacher id", id));
+		
 		teacher.setFirstName(teacherDto.getFirstName());
 		teacher.setMiddleName(teacherDto.getMiddleName());
 		teacher.setLastName(teacherDto.getLastName());
+		teacher.setMobileNo(teacherDto.getMobileNo());
+		teacher.setAddress(teacherDto.getAddress());
 		teacher.setEmail(teacherDto.getEmail());
 		teacher.setUsername(teacherDto.getUsername());
 		teacher.setProfilePic(teacherDto.getProfilePic());
-		teacher.setPassword(passwordEncoder.encode(teacherDto.getPassword()));
+		
+		if(teacherDto.getPassword() != null && !teacherDto.getPassword().isEmpty()) {
+			teacher.setPassword(passwordEncoder.encode(teacherDto.getPassword()));
+		}
+		
 		teacher.setStatus(teacherDto.getStatus());
 
 		List<Role> roles = new ArrayList<>();

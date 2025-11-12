@@ -37,6 +37,10 @@ public class Teacher {
 	private String middleName;
 	@Column(name = "last_name")
 	private String lastName;
+	@Column(name = "mobile_no",length = 10)
+	private long mobileNo;
+	@Column(name = "address")
+	private String address;
 	@Column(name = "username")
 	private String username;
 	@Column(name = "email")
