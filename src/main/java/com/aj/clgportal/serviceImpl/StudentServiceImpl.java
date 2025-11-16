@@ -1,14 +1,17 @@
 package com.aj.clgportal.serviceImpl;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.aj.clgportal.dto.StudentDto;
+import com.aj.clgportal.dto.TeacherDto;
 import com.aj.clgportal.entity.Department;
 import com.aj.clgportal.entity.Role;
 import com.aj.clgportal.entity.Student;
@@ -20,7 +23,10 @@ import com.aj.clgportal.repository.StudentRepository;
 import com.aj.clgportal.repository.TeacherRepository;
 import com.aj.clgportal.service.StudentService;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -42,6 +48,9 @@ public class StudentServiceImpl implements StudentService {
 	
 	String teacherUsername=null;
 	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 
 	@Override
 	public StudentDto newStudent(StudentDto studDto,HttpSession session) {
@@ -53,7 +62,7 @@ public class StudentServiceImpl implements StudentService {
 		student.setLastName(studDto.getLastName());
 		student.setUsername(studDto.getUserName());
 		student.setEmail(studDto.getEmail());
-		student.setPassword(studDto.getPassword());
+		student.setPassword(passwordEncoder.encode(studDto.getPassword()));
 		student.setGuardianName(studDto.getGuardianName());
 		student.setProfilePic(studDto.getProfilePic());
 		student.setStatus(studDto.getStatus());
@@ -81,7 +90,9 @@ public class StudentServiceImpl implements StudentService {
 		student.setLastName(studDto.getLastName());
 		student.setUsername(studDto.getUserName());
 		student.setEmail(studDto.getEmail());
-		student.setPassword(studDto.getPassword());
+		if(studDto.getPassword() != null && !studDto.getPassword().isEmpty()) {
+			student.setPassword(passwordEncoder.encode(studDto.getPassword()));
+		}
 		student.setGuardianName(studDto.getGuardianName());
 		student.setProfilePic(studDto.getProfilePic());
 		student.setStatus(studDto.getStatus());
@@ -133,6 +144,49 @@ public class StudentServiceImpl implements StudentService {
 	public Student DtoToStudent(StudentDto studDto) {
 		Student student = modelMapper.map(studDto, Student.class);
 		return student;
+	}
+
+	@PersistenceContext
+	private EntityManager entityManager;
+	
+	@Transactional
+	@Override
+	public void removeStudentRole(Long id) {
+		String sql = "DELETE FROM student_roles WHERE student_id = :studentId";
+	    entityManager.createNativeQuery(sql)
+	        .setParameter("studentId", id)
+	        .executeUpdate();
+		
+	}
+
+	@Override
+	public Long getMaxStudentId() {
+		Long maxRoleId = studentRepo.findMaxStudentId();
+		return maxRoleId;
+	}
+
+	@Transactional
+	@Override
+	public void resetStudentSequence(Long nextVal) {
+		String sql = "ALTER SEQUENCE tbl_student_seq RESTART WITH " + nextVal;
+	    entityManager.createNativeQuery(sql).executeUpdate();
+		
+	}
+	
+	@Override
+	public List<StudentDto> getStudentByStatus(Character status) {
+		List<Student> list = studentRepo.findByStatus(status);
+		List<StudentDto> lst = list.stream().map(student -> StudentToDto(student)).collect(Collectors.toList());
+		
+		list.forEach(student -> {
+			// Assuming getDepts() returns a Department object and getId() returns the
+			// department ID
+			lst.forEach(studDto -> {
+				studDto.setDeptId(student.getDepts().getId());
+			});
+		});
+		lst.sort(Comparator.comparing(StudentDto::getId));
+		return lst;
 	}
 
 	

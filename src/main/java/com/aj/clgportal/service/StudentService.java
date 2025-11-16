@@ -12,4 +12,8 @@ public interface StudentService {
 	public void deleteStudent(long id);
 	public StudentDto getStudentById(long id);
 	public List<StudentDto> getAllStudents();
+	public void removeStudentRole(Long id);
+	public Long getMaxStudentId();
+	public void resetStudentSequence(Long nextVal);
+	public List<StudentDto> getStudentByStatus(Character status);
 }

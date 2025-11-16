@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aj.clgportal.dto.ApiResponse;
 import com.aj.clgportal.dto.StudentDto;
+import com.aj.clgportal.dto.TeacherDto;
 import com.aj.clgportal.service.StudentService;
 
 import jakarta.servlet.http.HttpSession;
@@ -29,6 +30,7 @@ public class StudentController {
 	
 	@PostMapping("/")
 	public ResponseEntity<StudentDto> newStudent(@RequestBody StudentDto studentDto,HttpSession session) {
+		System.out.println("password: "+studentDto.getPassword());
 		StudentDto newStudent = studentService.newStudent(studentDto,session);
 		return new ResponseEntity<StudentDto>(newStudent,HttpStatus.CREATED);
 	}
@@ -41,7 +43,11 @@ public class StudentController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ApiResponse> deleteStudent(@PathVariable long id){
+		studentService.removeStudentRole(id);
 		studentService.deleteStudent(id);
+		Long maxTeacherId = studentService.getMaxStudentId();
+		studentService.resetStudentSequence(maxTeacherId+1);
+		
 		return new ResponseEntity<ApiResponse>(new ApiResponse("Student deleted successfully.", true),HttpStatus.OK);
 	}
 	
@@ -55,5 +61,11 @@ public class StudentController {
 	public ResponseEntity<List<StudentDto>> getAllStudents(){
 		List<StudentDto> allStudents = studentService.getAllStudents();
 		return ResponseEntity.ok(allStudents);
+	}
+	
+	@GetMapping("/status/{status}")
+	public ResponseEntity<List<StudentDto>> getTeacherByStatus(@PathVariable Character status){
+		List<StudentDto> students = studentService.getStudentByStatus(status);
+		return ResponseEntity.ok(students);
 	}
 }

@@ -51,14 +51,17 @@ public class SpringSecurityConfig {
 			authorize.requestMatchers(PUBLIC_URLS).permitAll();
 			authorize.requestMatchers("/api/admin/**").hasRole("ADMIN");
 			authorize.requestMatchers("/api/role/**").hasRole("ADMIN");
-			authorize.requestMatchers("/api/department/**").hasRole("ADMIN");
+			authorize.requestMatchers(HttpMethod.DELETE,"/api/department/**").hasRole("ADMIN");
+			authorize.requestMatchers(HttpMethod.POST,"/api/department/**").hasRole("ADMIN");
+			authorize.requestMatchers(HttpMethod.PUT,"/api/department/**").hasRole("ADMIN");
+			authorize.requestMatchers(HttpMethod.GET, "/api/department/**").hasAnyRole("ADMIN","TEACHER");
 			authorize.requestMatchers("/api/notice/**").hasRole("ADMIN");
 			authorize.requestMatchers(HttpMethod.POST, "/api/teacher/").hasAnyRole("ADMIN");
 			authorize.requestMatchers(HttpMethod.PUT, "/api/teacher/**").hasAnyRole("ADMIN","TEACHER");
 			authorize.requestMatchers(HttpMethod.GET, "/api/teacher/**").hasAnyRole("ADMIN", "TEACHER");
 			authorize.requestMatchers(HttpMethod.POST, "/api/teacher/profile/**").hasAnyRole("ADMIN", "TEACHER");
 			authorize.requestMatchers(HttpMethod.GET, "/api/teacher/profile/**").hasAnyRole("ADMIN", "TEACHER");
-			authorize.requestMatchers("/api/student/**").hasRole("TEACHER");
+			authorize.requestMatchers(HttpMethod.DELETE, "/api/student/**").hasRole("TEACHER");
 			authorize.requestMatchers(HttpMethod.POST, "/api/student/**").hasRole("TEACHER");
 			authorize.requestMatchers(HttpMethod.PUT, "/api/student/**").hasRole("TEACHER");
 			authorize.requestMatchers(HttpMethod.GET, "/api/student/**").hasAnyRole("ADMIN", "TEACHER", "STUDENT");
@@ -79,7 +82,7 @@ public class SpringSecurityConfig {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
 		corsConfiguration.setAllowCredentials(true);
-		corsConfiguration.addAllowedOriginPattern("*");
+		corsConfiguration.addAllowedOriginPattern("http://localhost:3000");
 		corsConfiguration.addAllowedHeader("*");
 		corsConfiguration.addAllowedMethod("*");
 		corsConfiguration.setMaxAge(3600L);
