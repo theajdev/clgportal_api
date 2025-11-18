@@ -122,17 +122,13 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	public List<TeacherDto> getAllTeachers() {
-		List<Teacher> all = teacherRepo.findAll();
-		List<TeacherDto> lst = all.stream().map((list) -> TeacherToDto(list)).collect(Collectors.toList());
-		// Set the department ID in each TeacherDto based on the teacher's department
-		all.forEach(teacher -> {
-			// Assuming getDepts() returns a Department object and getId() returns the
-			// department ID
-			lst.forEach(teachDto -> {
-				teachDto.setDeptId(teacher.getDepts().getId());
-			});
-		});
-		return lst;
+		 return teacherRepo.findAll().stream()
+		            .map(teacher -> {
+		                TeacherDto dto = TeacherToDto(teacher);
+		                dto.setDeptId(teacher.getDepts().getId());
+		                return dto;
+		            })
+		            .collect(Collectors.toList());
 	}
 	
 	@Override
@@ -173,6 +169,7 @@ public class TeacherServiceImpl implements TeacherService {
 			});
 		});
 		lst.sort(Comparator.comparing(TeacherDto::getId));
+		
 		return lst;
 	}
 
