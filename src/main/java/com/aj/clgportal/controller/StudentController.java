@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aj.clgportal.dto.ApiResponse;
 import com.aj.clgportal.dto.StudentDto;
-import com.aj.clgportal.dto.TeacherDto;
 import com.aj.clgportal.service.StudentService;
 
 import jakarta.servlet.http.HttpSession;
