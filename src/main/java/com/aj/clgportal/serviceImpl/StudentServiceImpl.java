@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,16 +47,18 @@ public class StudentServiceImpl implements StudentService {
 	@Autowired
 	DeptRespository deptRepo;
 	
-	String teacherUsername=null;
+	
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
 
 	@Override
-	public StudentDto newStudent(StudentDto studDto,HttpSession session) {
+	public StudentDto newStudent(StudentDto studDto,HttpSession session)  {
 		Department department = deptRepo.findById(studDto.getDeptId()).orElseThrow(()->new ResourceNotFoundException("Department", "department id", studDto.getDeptId()));
-		teacherUsername=(String) session.getAttribute("usernameoremail");
+		String teacherUsername=SecurityContextHolder.getContext()
+		        .getAuthentication()
+		        .getName();
 		Student student = new Student();
 		student.setFirstName(studDto.getFirstName());
 		student.setMiddleName(studDto.getMiddleName());
@@ -82,7 +85,9 @@ public class StudentServiceImpl implements StudentService {
 	@Override
 	public StudentDto updateStudent(StudentDto studDto, long id,HttpSession session) {
 		Department department = deptRepo.findById(studDto.getDeptId()).orElseThrow(()->new ResourceNotFoundException("Department", "department id", studDto.getDeptId()));
-		teacherUsername=(String) session.getAttribute("usernameoremail");
+		String teacherUsername=SecurityContextHolder.getContext()
+		        .getAuthentication()
+		        .getName();
 		Student student = studentRepo.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Student", "student id", id));
 		student.setFirstName(studDto.getFirstName());
@@ -126,14 +131,13 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	public List<StudentDto> getAllStudents() {
-		List<Student> list = studentRepo.findAll();
-		List<StudentDto> students = list.stream().map((lst) -> StudentToDto(lst)).collect(Collectors.toList());
-		list.forEach(stud->{
-			students.forEach(studDto->{
-				studDto.setDeptId(stud.getDepts().getId());
-			});
-		});
-		return students;
+		return studentRepo.findAll().stream()
+	            .map(student -> {
+	                StudentDto dto = StudentToDto(student);
+	                dto.setDeptId(student.getDepts().getId());
+	                return dto;
+	            })
+	            .collect(Collectors.toList());
 	}
 
 	public StudentDto StudentToDto(Student stud) {
@@ -156,7 +160,6 @@ public class StudentServiceImpl implements StudentService {
 	    entityManager.createNativeQuery(sql)
 	        .setParameter("studentId", id)
 	        .executeUpdate();
-		
 	}
 
 	@Override
