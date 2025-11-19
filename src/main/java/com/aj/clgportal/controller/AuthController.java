@@ -58,6 +58,7 @@ public class AuthController {
 		jwtAuthResponse.setUser(user);
 		
 		HttpSession session=request.getSession();
+		
 		session.setAttribute("usernameoremail",loginDto.getUsernameOrEmail());
 		
 		return new ResponseEntity<>(jwtAuthResponse, HttpStatus.OK);
