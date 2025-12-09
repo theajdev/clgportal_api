@@ -208,4 +208,15 @@ public class NoticeServiceImpl implements NoticeService {
 		
 	}
 
+	@Override
+	public List<NoticeDto> getNoticesByDepts(Long deptId) {
+		List<Notice> notices = noticeRepo.findByDeptsNotices(deptId);
+		 return notices.stream()
+                 .map(this::noticeToDto)
+                 .collect(Collectors.toList());
+		
+	}
+	
+	
+
 }

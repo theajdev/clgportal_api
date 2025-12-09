@@ -72,4 +72,10 @@ public class NoticeController {
 		Long countOfNotice = noticeServ.getCountOfNotice('V');
 		return ResponseEntity.ok(countOfNotice);
 	}
+	
+	@GetMapping("/depts/{id}")
+	public ResponseEntity<List<NoticeDto>> getAllNoticesByDepts(@PathVariable Long id){
+		List<NoticeDto> notices = noticeServ.getNoticesByDepts(id);
+		return ResponseEntity.ok(notices);
+	}
 }

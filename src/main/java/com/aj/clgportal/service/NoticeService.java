@@ -15,4 +15,5 @@ public interface NoticeService {
 	public List<NoticeDto> getNoticeByStatus(Character status);
 	public void removeDepartmentNotice(Long id);
 	public Long getCountOfNotice(Character status); 
+	public List<NoticeDto> getNoticesByDepts(Long deptId);
 }
