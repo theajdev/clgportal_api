@@ -1,5 +1,6 @@
 package com.aj.clgportal.entity;
 
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -30,15 +31,19 @@ public class Student {
 	@SequenceGenerator(name = "tbl_student_seq", sequenceName = "tbl_student_seq", allocationSize = 1)
 	@Column(name = "student_id")
 	private long id;
-	@Column(name = "first_name")
+	@Column(name = "first_name",nullable = false )
 	private String firstName;
 	@Column(name = "middle_name")
 	private String middleName;
-	@Column(name = "last_name")
+	@Column(name = "last_name",nullable = false)
 	private String lastName;
-	@Column(name = "username")
+	@Column(name = "mobile_no",length = 10,nullable = false)
+	private long mobileNo;
+	@Column(name = "address",nullable = false)
+	private String address;
+	@Column(name = "username",nullable = false)
 	private String username;
-	@Column(name = "email")
+	@Column(name = "email",nullable = false)
 	private String email;
 	@Column(name = "password")
 	private String password;
@@ -46,7 +51,13 @@ public class Student {
 	private String guardianName;
 	@Column(name = "profile_pic")
 	private String profilePic;
-	@Column(name = "status")
+	@Column(name = "about",nullable = true)
+	private String about;
+	@Column(name="posted_on",nullable = true)
+	private Date postedOn;
+	@Column(name="updated_on",nullable = true)
+	private Date updatedOn;
+	@Column(name = "status",nullable = false)
 	private Character status;
 	@ManyToOne
 	@JoinColumn(name = "teacher_id")

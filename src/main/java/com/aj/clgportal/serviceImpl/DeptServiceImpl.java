@@ -59,16 +59,16 @@ public class DeptServiceImpl implements DeptService {
 				.orElseThrow(() -> new ResourceNotFoundException("Department", "department id", id));
 		deptRepo.delete(dept);
 	}
-	
+
 	@Override
 	public Long getMaxDeptId() {
 		Long maxDeptId = deptRepo.findMaxDeptId();
 		return maxDeptId;
 	}
-	
+
 	@PersistenceContext
 	private EntityManager entityManager;
-	
+
 	@Transactional
 	@Override
 	public void resetDeptSequence(Long nextVal) {
@@ -76,7 +76,7 @@ public class DeptServiceImpl implements DeptService {
 
 		entityManager.createNativeQuery(sql).executeUpdate();
 	}
-	
+
 	@Override
 	public DepartmentDto getDepartmentById(long id) {
 		Department dept = deptRepo.findById(id)
@@ -113,7 +113,7 @@ public class DeptServiceImpl implements DeptService {
 
 	@Override
 	public Long getDeptCount(Character status) {
-		status='V';
+		status = 'V';
 		Long deptCount = deptRepo.countByStatus(status);
 		return deptCount;
 	}

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.aj.clgportal.entity.Teacher;
 
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
+	
 	Optional<Teacher> findByUsername(String username);
 
 	Boolean existsByEmail(String email);
@@ -23,5 +24,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 	Long findMaxTeacherId();
 	
 	Long countByStatus(Character status);
+	
+	List<Teacher> findByDepts_Id(Long deptId);
 	
 }

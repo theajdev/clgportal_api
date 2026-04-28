@@ -1,5 +1,6 @@
 package com.aj.clgportal.entity;
 
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -51,6 +52,14 @@ public class Teacher {
 	private String profilePic;
 	@Column(name = "status")
 	private Character status;
+	@Column(name = "designation")
+	private String designation;
+	@Column(name = "about")
+	private String about;
+	@Column(name="posted_on")
+	private Date postedOn;
+	@Column(name="updated_on")
+	private Date updatedOn;
 	@OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
 	private List<Student> students;
 	@ManyToOne(fetch = FetchType.EAGER)

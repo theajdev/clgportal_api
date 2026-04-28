@@ -1,7 +1,9 @@
 package com.aj.clgportal.serviceImpl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +47,19 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	public TeacherDto newTeacher(TeacherDto teacherDto) {
+		
+		Date currentDate = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String formattedDate = formatter.format(currentDate);
+        
+        Date postedDate=null;
+		try {
+			postedDate = formatter.parse(formattedDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		Department department = deptRepo.findById(teacherDto.getDeptId()).orElseThrow(
 				() -> new ResourceNotFoundException("Department", "department id", teacherDto.getDeptId()));
 		Teacher teacher = new Teacher();
@@ -55,6 +70,10 @@ public class TeacherServiceImpl implements TeacherService {
 		teacher.setAddress(teacherDto.getAddress());
 		teacher.setEmail(teacherDto.getEmail());
 		teacher.setUsername(teacherDto.getUsername());
+		teacher.setDesignation(teacherDto.getDesignation());
+		teacher.setAbout(teacherDto.getAbout());
+		teacher.setPostedOn(postedDate);
+		teacher.setUpdatedOn(null);
 		teacher.setPassword(passwordEncoder.encode(teacherDto.getPassword()));
 		teacher.setProfilePic(teacherDto.getProfilePic());
 		teacher.setStatus(teacherDto.getStatus());
@@ -72,6 +91,19 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	public TeacherDto updateTeacher(TeacherDto teacherDto, long id) {
+		
+		Date currentDate = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String formattedDate = formatter.format(currentDate);
+        
+        Date updatedDate=null;
+		try {
+			updatedDate = formatter.parse(formattedDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		Department department = deptRepo.findById(teacherDto.getDeptId()).orElseThrow(
 				() -> new ResourceNotFoundException("Department", "department id", teacherDto.getDeptId()));
 		Teacher teacher = teacherRepo.findById(id)
@@ -84,11 +116,16 @@ public class TeacherServiceImpl implements TeacherService {
 		teacher.setAddress(teacherDto.getAddress());
 		teacher.setEmail(teacherDto.getEmail());
 		teacher.setUsername(teacherDto.getUsername());
+		teacher.setDesignation(teacherDto.getDesignation());
+		teacher.setAbout(teacherDto.getAbout());
+		teacher.setPostedOn(teacherDto.getPostedOn());
+		teacher.setUpdatedOn(updatedDate);
 		teacher.setProfilePic(teacherDto.getProfilePic());
 		
-		if(teacherDto.getPassword() != null && !teacherDto.getPassword().isEmpty()) {
-			teacher.setPassword(passwordEncoder.encode(teacherDto.getPassword()));
-		}
+		/*
+		 * if(teacherDto.getPassword() != null && !teacherDto.getPassword().isEmpty()) {
+		 * teacher.setPassword(passwordEncoder.encode(teacherDto.getPassword())); }
+		 */
 		
 		teacher.setStatus(teacherDto.getStatus());
 
@@ -158,20 +195,15 @@ public class TeacherServiceImpl implements TeacherService {
 	
 	@Override
 	public List<TeacherDto> getTeacherByStatus(Character status) {
-		List<Teacher> list = teacherRepo.findByStatus(status);
-		List<TeacherDto> lst = list.stream().map(teacher -> TeacherToDto(teacher)).collect(Collectors.toList());
 		
-		list.forEach(teacher -> {
-			// Assuming getDepts() returns a Department object and getId() returns the
-			// department ID
-			lst.forEach(teachDto -> {
-				teachDto.setDeptId(teacher.getDepts().getId());
-			});
-		});
-		lst.sort(Comparator.comparing(TeacherDto::getId));
-		
-		return lst;
-	}
+		return teacherRepo.findByStatus(status).stream()
+	            .map(teacher -> {
+	                TeacherDto dto = TeacherToDto(teacher);
+	                dto.setDeptId(teacher.getDepts().getId());
+	                return dto;
+	            })
+	            .collect(Collectors.toList());
+}
 
 	public TeacherDto TeacherToDto(Teacher teacher) {
 		TeacherDto teacherDto = modelMapper.map(teacher, TeacherDto.class);

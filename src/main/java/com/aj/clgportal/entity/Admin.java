@@ -1,5 +1,6 @@
 package com.aj.clgportal.entity;
 
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -37,6 +38,10 @@ public class Admin {
 	public String lastName;
 	@Column(name = "username", nullable = false)
 	public String username;
+	@Column(name = "mobile_no",length = 10)
+	private long mobileNo;
+	@Column(name = "address")
+	private String address;
 	@Column(name = "email", nullable = false)
 	public String email;
 	@Column(name = "password", nullable = false)
@@ -45,6 +50,14 @@ public class Admin {
 	public String profilePic;
 	@Column(name = "status", nullable = false)
 	public Character status;
+	@Column(name = "designation")
+	private String designation;
+	@Column(name = "about")
+	private String about;
+	@Column(name="posted_on")
+	private Date postedOn;
+	@Column(name="updated_on")
+	private Date updatedOn;
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "admin_roles", joinColumns = @JoinColumn(name = "admin_id", referencedColumnName = "admin_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
 	private List<Role> roles;

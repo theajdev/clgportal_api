@@ -16,9 +16,11 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 	Student findByUsernameOrEmail(String username, String email);
 
 	Boolean existsByUsername(String username);
-	
-	@Query(value = "select COALESCE(max(s.student_id),0) from tbl_student s",nativeQuery = true)
+
+	@Query(value = "select COALESCE(max(s.student_id),0) from tbl_student s", nativeQuery = true)
 	Long findMaxStudentId();
-	
+
 	List<Student> findByStatus(Character status);
+
+	List<Student> findByDepts_Id(Long deptId);
 }

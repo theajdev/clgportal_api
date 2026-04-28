@@ -1,5 +1,7 @@
 package com.aj.clgportal.dto;
 
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,5 +21,10 @@ public class TeacherDto {
 	public String password;
 	public String profilePic;
 	public Character status;
+	private String designation;
+	private String about;
+	private Date postedOn;
+	private Date updatedOn;
 	private long deptId;
+
 }

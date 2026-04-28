@@ -1,9 +1,13 @@
 package com.aj.clgportal.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,46 +16,77 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.aj.clgportal.dto.AdminDto;
 import com.aj.clgportal.dto.ApiResponse;
 import com.aj.clgportal.service.AdminService;
+import com.aj.clgportal.service.ProfilePicService;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
-	
+
 	@Autowired
 	AdminService adminService;
-	
+
+	@Autowired
+	ProfilePicService picService;
+
+	@Value("${profile.pic}")
+	private String path;
+
 	@PostMapping("/")
-	public ResponseEntity<AdminDto> newAdmin(@RequestBody AdminDto adminDto){
+	public ResponseEntity<AdminDto> newAdmin(@RequestBody AdminDto adminDto) {
 		AdminDto newAdmin = adminService.newAdmin(adminDto);
-		return new ResponseEntity<AdminDto>(newAdmin,HttpStatus.CREATED);
+		return new ResponseEntity<AdminDto>(newAdmin, HttpStatus.CREATED);
 	}
-	
+
 	@PutMapping("/{id}")
-	public ResponseEntity<AdminDto> updateAdmin(@RequestBody AdminDto adminDto, @PathVariable long id){
+	public ResponseEntity<AdminDto> updateAdmin(@RequestBody AdminDto adminDto, @PathVariable long id) {
 		AdminDto updatedAdmin = adminService.updateAdmin(adminDto, id);
 		return ResponseEntity.ok(updatedAdmin);
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<ApiResponse> deleteAdmin(@PathVariable long id){
+	public ResponseEntity<ApiResponse> deleteAdmin(@PathVariable long id) {
 		adminService.deleteAdmin(id);
-		return new ResponseEntity<ApiResponse>(new ApiResponse("Admin deleted successfully.", false),HttpStatus.OK);
+		return new ResponseEntity<ApiResponse>(new ApiResponse("Admin deleted successfully.", false), HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<AdminDto> getAdminDetailsById(@PathVariable long id){
+	public ResponseEntity<AdminDto> getAdminDetailsById(@PathVariable long id) {
 		AdminDto admin = adminService.getAdminDetailsById(id);
-		return new ResponseEntity<AdminDto>(admin,HttpStatus.OK);
+		return new ResponseEntity<AdminDto>(admin, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/")
-	public ResponseEntity<List<AdminDto>> getAllAdmins(){
+	public ResponseEntity<List<AdminDto>> getAllAdmins() {
 		List<AdminDto> list = adminService.getAllAdminsList();
 		return ResponseEntity.ok(list);
 	}
+
+	// Teacher Profile pic upload
+	@PostMapping("/profile/upload/{adminId}")
+	public ResponseEntity<AdminDto> uploadPostImage(@PathVariable Long adminId, @RequestParam MultipartFile image)
+			throws IOException {
+		String fileName = picService.uploadProfilePic(path, image);
+		AdminDto adminDto = adminService.getAdminDetailsById(adminId);
+		adminDto.setProfilePic(fileName);
+		AdminDto updateAdmin = adminService.updateAdmin(adminDto, adminId);
+		return new ResponseEntity<AdminDto>(updateAdmin, HttpStatus.OK);
+	}
+
+	// Download image
+	@GetMapping(value = "/profile/image/{imageName}", produces = MediaType.IMAGE_JPEG_VALUE)
+	public void downloadImage(@PathVariable String imageName, HttpServletResponse response) throws IOException {
+		InputStream resource = picService.getResource(path, imageName);
+		response.setContentType(org.springframework.http.MediaType.IMAGE_JPEG_VALUE);
+		org.springframework.util.StreamUtils.copy(resource, response.getOutputStream());
+	}
+
 }

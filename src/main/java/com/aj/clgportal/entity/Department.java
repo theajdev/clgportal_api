@@ -29,7 +29,7 @@ public class Department {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tbl_dept_seq")
 	@SequenceGenerator(name = "tbl_dept_seq", sequenceName = "tbl_dept_seq", allocationSize = 1)
 	@Column(name = "dept_id")
-	private long id;
+	private Long id;
 	@Column(name = "dept_desc", nullable = false,unique = true)
 	private String deptDesc;
 	@Column(name = "status", nullable = false)

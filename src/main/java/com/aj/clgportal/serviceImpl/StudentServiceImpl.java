@@ -1,7 +1,10 @@
 package com.aj.clgportal.serviceImpl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.aj.clgportal.dto.StudentDto;
-import com.aj.clgportal.dto.TeacherDto;
 import com.aj.clgportal.entity.Department;
 import com.aj.clgportal.entity.Role;
 import com.aj.clgportal.entity.Student;
@@ -43,33 +45,47 @@ public class StudentServiceImpl implements StudentService {
 
 	@Autowired
 	TeacherRepository teacherRepo;
-	
+
 	@Autowired
 	DeptRespository deptRepo;
-	
-	
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
 
 	@Override
-	public StudentDto newStudent(StudentDto studDto,HttpSession session)  {
-		Department department = deptRepo.findById(studDto.getDeptId()).orElseThrow(()->new ResourceNotFoundException("Department", "department id", studDto.getDeptId()));
-		String teacherUsername=SecurityContextHolder.getContext()
-		        .getAuthentication()
-		        .getName();
+	public StudentDto newStudent(StudentDto studDto, HttpSession session) {
+
+		Date currentDate = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		String formattedDate = formatter.format(currentDate);
+
+		Date postedDate = null;
+		try {
+			postedDate = formatter.parse(formattedDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Department department = deptRepo.findById(studDto.getDeptId())
+				.orElseThrow(() -> new ResourceNotFoundException("Department", "department id", studDto.getDeptId()));
+		String teacherUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 		Student student = new Student();
 		student.setFirstName(studDto.getFirstName());
 		student.setMiddleName(studDto.getMiddleName());
 		student.setLastName(studDto.getLastName());
-		student.setUsername(studDto.getUserName());
+		student.setMobileNo(studDto.getMobileNo());
+		student.setAddress(studDto.getAddress());
+		student.setPostedOn(postedDate);
+		student.setUpdatedOn(null);
+		student.setAbout(studDto.getAbout());
+		student.setUsername(studDto.getUsername());
 		student.setEmail(studDto.getEmail());
 		student.setPassword(passwordEncoder.encode(studDto.getPassword()));
 		student.setGuardianName(studDto.getGuardianName());
 		student.setProfilePic(studDto.getProfilePic());
 		student.setStatus(studDto.getStatus());
-		Teacher teacher=teacherRepo.findByUsernameOrEmail(teacherUsername, teacherUsername);
+		Teacher teacher = teacherRepo.findByUsernameOrEmail(teacherUsername, teacherUsername);
 		student.setTeacher(teacher);
 		student.setDepts(department);
 		List<Role> roles = new ArrayList<>();
@@ -83,25 +99,43 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public StudentDto updateStudent(StudentDto studDto, long id,HttpSession session) {
-		Department department = deptRepo.findById(studDto.getDeptId()).orElseThrow(()->new ResourceNotFoundException("Department", "department id", studDto.getDeptId()));
-		String teacherUsername=SecurityContextHolder.getContext()
-		        .getAuthentication()
-		        .getName();
+	public StudentDto updateStudent(StudentDto studDto, long id) {
+
+		Date currentDate = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		String formattedDate = formatter.format(currentDate);
+
+		Date updatedDate = null;
+		try {
+			updatedDate = formatter.parse(formattedDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Department department = deptRepo.findById(studDto.getDeptId())
+				.orElseThrow(() -> new ResourceNotFoundException("Department", "department id", studDto.getDeptId()));
+		String teacherUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 		Student student = studentRepo.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Student", "student id", id));
 		student.setFirstName(studDto.getFirstName());
 		student.setMiddleName(studDto.getMiddleName());
 		student.setLastName(studDto.getLastName());
-		student.setUsername(studDto.getUserName());
+		student.setMobileNo(studDto.getMobileNo());
+		student.setAddress(studDto.getAddress());
+		student.setUsername(studDto.getUsername());
 		student.setEmail(studDto.getEmail());
-		if(studDto.getPassword() != null && !studDto.getPassword().isEmpty()) {
-			student.setPassword(passwordEncoder.encode(studDto.getPassword()));
-		}
+		/*
+		 * if(studDto.getPassword() != null && !studDto.getPassword().isEmpty()) {
+		 * student.setPassword(passwordEncoder.encode(studDto.getPassword())); }
+		 */
 		student.setGuardianName(studDto.getGuardianName());
 		student.setProfilePic(studDto.getProfilePic());
 		student.setStatus(studDto.getStatus());
-		Teacher teacher=teacherRepo.findByUsernameOrEmail(teacherUsername, teacherUsername);
+		student.setPostedOn(studDto.getPostedOn());
+		student.setUpdatedOn(updatedDate);
+		student.setAbout(studDto.getAbout());
+		Teacher teacher = teacherRepo.findByUsernameOrEmail(teacherUsername, teacherUsername);
 		student.setTeacher(teacher);
 		student.setDepts(department);
 		List<Role> roles = new ArrayList<>();
@@ -131,13 +165,11 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	public List<StudentDto> getAllStudents() {
-		return studentRepo.findAll().stream()
-	            .map(student -> {
-	                StudentDto dto = StudentToDto(student);
-	                dto.setDeptId(student.getDepts().getId());
-	                return dto;
-	            })
-	            .collect(Collectors.toList());
+		return studentRepo.findAll().stream().map(student -> {
+			StudentDto dto = StudentToDto(student);
+			dto.setDeptId(student.getDepts().getId());
+			return dto;
+		}).collect(Collectors.toList());
 	}
 
 	public StudentDto StudentToDto(Student stud) {
@@ -152,14 +184,12 @@ public class StudentServiceImpl implements StudentService {
 
 	@PersistenceContext
 	private EntityManager entityManager;
-	
+
 	@Transactional
 	@Override
 	public void removeStudentRole(Long id) {
 		String sql = "DELETE FROM student_roles WHERE student_id = :studentId";
-	    entityManager.createNativeQuery(sql)
-	        .setParameter("studentId", id)
-	        .executeUpdate();
+		entityManager.createNativeQuery(sql).setParameter("studentId", id).executeUpdate();
 	}
 
 	@Override
@@ -172,15 +202,15 @@ public class StudentServiceImpl implements StudentService {
 	@Override
 	public void resetStudentSequence(Long nextVal) {
 		String sql = "ALTER SEQUENCE tbl_student_seq RESTART WITH " + nextVal;
-	    entityManager.createNativeQuery(sql).executeUpdate();
-		
+		entityManager.createNativeQuery(sql).executeUpdate();
+
 	}
-	
+
 	@Override
 	public List<StudentDto> getStudentByStatus(Character status) {
 		List<Student> list = studentRepo.findByStatus(status);
 		List<StudentDto> lst = list.stream().map(student -> StudentToDto(student)).collect(Collectors.toList());
-		
+
 		list.forEach(student -> {
 			// Assuming getDepts() returns a Department object and getId() returns the
 			// department ID
@@ -191,9 +221,5 @@ public class StudentServiceImpl implements StudentService {
 		lst.sort(Comparator.comparing(StudentDto::getId));
 		return lst;
 	}
-
-	
-
-	
 
 }

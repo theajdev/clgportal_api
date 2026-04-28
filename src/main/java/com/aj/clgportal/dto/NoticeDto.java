@@ -14,8 +14,13 @@ public class NoticeDto {
 	private Long id;
 	private String noticeTitle;
 	private String noticeDesc;
+	private String sendersUsername;
+    private String sendersProfilePic;
+    private String sentBy;
 	private Character status;
 	private List<Long> deptId;
 	private Date postedOn;
 	private Date updatedOn;
+	private Character isRead;
+	private List<AttachmentDto> attachments;
 }

@@ -17,6 +17,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,32 +41,43 @@ public class SpringSecurityConfig {
 		return new BCryptPasswordEncoder(); // You can use other implementations if needed
 	}
 
-	public static final String[] PUBLIC_URLS = { "/","/api/auth/**", "/api/auth/register", "/v3/api-docs",
-			"/api-docs", "/v3/api-docs/**", "/v2/api-docs", "/swagger-resources/**", "/swagger-ui/**",
-			"/swagger-ui.html", "/webjars/**"
+	public static final String[] PUBLIC_URLS = { "/", "/api/auth/**", "/api/auth/register", "/v3/api-docs", "/api-docs",
+			"/v3/api-docs/**", "/v2/api-docs", "/swagger-resources/**", "/swagger-ui/**", "/swagger-ui.html",
+			"/webjars/**", "/api/user/**", "/ws/**", "/ws/info/**", "/api/notifications/**", "/api/mark-one/**",
+			"/api/mark-read/**" };
 
-	};
-	
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable()).authorizeHttpRequests((authorize) -> {
-			authorize.requestMatchers(PUBLIC_URLS).permitAll();
-			authorize.requestMatchers("/api/admin/**").hasRole("ADMIN");
+			authorize.requestMatchers("/ws/**").permitAll() // 🔥 ADD THIS FIRST
+					.requestMatchers(PUBLIC_URLS).permitAll();
+			authorize.requestMatchers(HttpMethod.GET, "/api/admin/**").hasRole("ADMIN");
+			authorize.requestMatchers(HttpMethod.PUT, "/api/admin/**").hasRole("ADMIN");
+			authorize.requestMatchers(HttpMethod.POST, "/api/admin/**").hasRole("ADMIN");
+			authorize.requestMatchers(HttpMethod.DELETE, "/api/admin/**").hasRole("ADMIN");
 			authorize.requestMatchers("/api/role/**").hasRole("ADMIN");
-			authorize.requestMatchers(HttpMethod.DELETE,"/api/department/**").hasRole("ADMIN");
-			authorize.requestMatchers(HttpMethod.POST,"/api/department/**").hasRole("ADMIN");
-			authorize.requestMatchers(HttpMethod.PUT,"/api/department/**").hasRole("ADMIN");
-			authorize.requestMatchers(HttpMethod.GET, "/api/department/**").hasAnyRole("ADMIN","TEACHER");
-			authorize.requestMatchers(HttpMethod.GET, "/api/notice/depts/**").hasAnyRole("ADMIN","TEACHER");
-			authorize.requestMatchers("/api/notice/**").hasRole("ADMIN");
+			authorize.requestMatchers(HttpMethod.DELETE, "/api/department/**").hasRole("ADMIN");
+			authorize.requestMatchers(HttpMethod.POST, "/api/department/**").hasRole("ADMIN");
+			authorize.requestMatchers(HttpMethod.PUT, "/api/department/**").hasRole("ADMIN");
+			authorize.requestMatchers(HttpMethod.GET, "/api/department/**").hasAnyRole("ADMIN", "TEACHER", "STUDENT");
+			authorize.requestMatchers(HttpMethod.GET, "/api/notice/depts/**").hasAnyRole("ADMIN", "TEACHER", "STUDENT");
+			authorize.requestMatchers(HttpMethod.POST, "/api/notice/**").hasAnyRole("ADMIN", "TEACHER", "STUDENT");
+			authorize.requestMatchers(HttpMethod.GET, "/api/notice/**").hasAnyRole("ADMIN", "TEACHER", "STUDENT");
 			authorize.requestMatchers(HttpMethod.POST, "/api/teacher/").hasAnyRole("ADMIN");
-			authorize.requestMatchers(HttpMethod.PUT, "/api/teacher/**").hasAnyRole("ADMIN","TEACHER");
+			authorize.requestMatchers(HttpMethod.PUT, "/api/teacher/**").hasAnyRole("ADMIN", "TEACHER");
 			authorize.requestMatchers(HttpMethod.GET, "/api/teacher/**").hasAnyRole("ADMIN", "TEACHER");
 			authorize.requestMatchers(HttpMethod.POST, "/api/teacher/profile/**").hasAnyRole("ADMIN", "TEACHER");
 			authorize.requestMatchers(HttpMethod.GET, "/api/teacher/profile/**").hasAnyRole("ADMIN", "TEACHER");
+			authorize.requestMatchers(HttpMethod.POST, "/api/student/profile/**").hasAnyRole("ADMIN", "TEACHER",
+					"STUDENT");
+			authorize.requestMatchers(HttpMethod.GET, "/api/student/profile/**").hasAnyRole("ADMIN", "TEACHER",
+					"STUDENT");
+			authorize.requestMatchers(HttpMethod.POST, "/api/admin/profile/**").hasAnyRole("ADMIN");
+			authorize.requestMatchers(HttpMethod.GET, "/api/admin/profile/**").hasAnyRole("ADMIN", "TEACHER",
+					"STUDENT");
 			authorize.requestMatchers(HttpMethod.DELETE, "/api/student/**").hasRole("TEACHER");
-			authorize.requestMatchers(HttpMethod.POST, "/api/student/**").hasRole("TEACHER");
-			authorize.requestMatchers(HttpMethod.PUT, "/api/student/**").hasRole("TEACHER");
+			authorize.requestMatchers(HttpMethod.POST, "/api/student/**").hasAnyRole("TEACHER", "STUDENT");
+			authorize.requestMatchers(HttpMethod.PUT, "/api/student/**").hasAnyRole("TEACHER", "STUDENT");
 			authorize.requestMatchers(HttpMethod.GET, "/api/student/**").hasAnyRole("ADMIN", "TEACHER", "STUDENT");
 			authorize.anyRequest().authenticated();
 		}).httpBasic(Customizer.withDefaults());
@@ -77,13 +90,13 @@ public class SpringSecurityConfig {
 	AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfigure) throws Exception {
 		return authenticationConfigure.getAuthenticationManager();
 	}
-	
+
 	@Bean
 	FilterRegistrationBean<CorsFilter> corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
 		corsConfiguration.setAllowCredentials(true);
-		corsConfiguration.addAllowedOriginPattern("http://localhost:3000");
+		corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
 		corsConfiguration.addAllowedHeader("*");
 		corsConfiguration.addAllowedMethod("*");
 		corsConfiguration.setMaxAge(3600L);
