@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aj.clgportal.dto.ApiResponse;
+import com.aj.clgportal.dto.RoleDetailsProjection;
 import com.aj.clgportal.dto.RoleDto;
 import com.aj.clgportal.service.RoleService;
 
@@ -25,49 +27,55 @@ import jakarta.validation.Valid;
 public class RoleController {
 
 	@Autowired
-	public RoleService userTypeServ;
+	public RoleService roleService;
 
 	@PostMapping("/")
 	public ResponseEntity<RoleDto> NewUserType(@Valid @RequestBody RoleDto roleDto) {
-		RoleDto userType = userTypeServ.createUserType(roleDto);
+		RoleDto userType = roleService.createUserType(roleDto);
 		return new ResponseEntity<RoleDto>(userType, HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<RoleDto> updateUserType(@Valid @RequestBody RoleDto roleDto, @PathVariable long id) {
-		RoleDto updatedUserType = userTypeServ.updateUserType(roleDto, id);
+		RoleDto updatedUserType = roleService.updateUserType(roleDto, id);
 		return ResponseEntity.ok(updatedUserType);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ApiResponse> deleteUserType(@PathVariable long id) {
-		userTypeServ.deleteUserType(id);
-		Long maxRoleId = userTypeServ.getMaxRoleId();
-		userTypeServ.resetRoleSequence(maxRoleId+1);
+		roleService.deleteUserType(id);
+		Long maxRoleId = roleService.getMaxRoleId();
+		roleService.resetRoleSequence(maxRoleId + 1);
 		return new ResponseEntity<>(new ApiResponse("User type deleted successfully.", true), HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/")
-	public ResponseEntity<List<RoleDto>> getAllUserTypes(){
-		List<RoleDto> list = userTypeServ.getAllUserTypes();
+	public ResponseEntity<List<RoleDto>> getAllUserTypes() {
+		List<RoleDto> list = roleService.getAllUserTypes();
 		return ResponseEntity.ok(list);
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<RoleDto> getUserType(@PathVariable long id){
-		RoleDto userType = userTypeServ.getUserTypeById(id);
-		return new ResponseEntity<>(userType,HttpStatus.OK);
+	public ResponseEntity<RoleDto> getUserType(@PathVariable long id) {
+		RoleDto userType = roleService.getUserTypeById(id);
+		return new ResponseEntity<>(userType, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/status/{status}")
-	public ResponseEntity<List<RoleDto>> getUserType(@PathVariable Character status){
-		List<RoleDto> userType = userTypeServ.getUserTypesByStatus(status);
+	public ResponseEntity<List<RoleDto>> getUserType(@PathVariable Character status) {
+		List<RoleDto> userType = roleService.getUserTypesByStatus(status);
 		return ResponseEntity.ok(userType);
 	}
-	
+
 	@GetMapping("/count")
-	public ResponseEntity<Long> getRoleCount(){
-		Long roleCount = userTypeServ.getRoleCount('V');
+	public ResponseEntity<Long> getRoleCount() {
+		Long roleCount = roleService.getRoleCount('V');
 		return ResponseEntity.ok(roleCount);
-	} 
+	}
+
+	@GetMapping("/details")
+	public List<RoleDetailsProjection> getRoles(@RequestParam(required = false) Integer roleId) {
+		List<RoleDetailsProjection> roleDetails = roleService.getRoleDetails(roleId);
+		return roleDetails;
+	}
 }

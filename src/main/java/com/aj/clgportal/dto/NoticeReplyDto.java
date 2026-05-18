@@ -18,4 +18,6 @@ public class NoticeReplyDto {
 	private String profilePic;
 	private String designation;
 	private Date repliedOn;
+	private String username; 
+	private Long NotificationId;
 }

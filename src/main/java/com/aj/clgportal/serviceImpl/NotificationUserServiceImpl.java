@@ -15,13 +15,14 @@ public class NotificationUserServiceImpl implements NotificationUserService {
 	NotificationUserRepository notificationUserRepo;
 
 	@Override
-	public List<NotificationUser> getUnreadForCurrentUser(String username) {
-		return notificationUserRepo.findByUsernameAndReadFalse(username);
+	public List<NotificationUser> getUnreadForCurrentUser(String username,Long deptId) {
+		
+		return notificationUserRepo.findByUsernameAndReadFalse(username,deptId);
 	}
 
 	@Override
 	public void markOneAsRead(Long notificationId, String username) {
-
+		//System.out.println("Notification Id: "+notificationId+" Username: "+username);
 		NotificationUser nu = notificationUserRepo.findByNotificationIdAndUsername(notificationId, username)
 				.orElseThrow();
 
@@ -31,9 +32,9 @@ public class NotificationUserServiceImpl implements NotificationUserService {
 	}
 
 	@Override
-	public void markAllAsRead(String username) {
+	public void markAllAsRead(String username,Long deptId) {
 
-		List<NotificationUser> list = notificationUserRepo.findByUsernameAndReadFalse(username);
+		List<NotificationUser> list = notificationUserRepo.findByUsernameAndReadFalse(username,deptId);
 
 		list.forEach(n -> n.setRead(true));
 

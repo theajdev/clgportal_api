@@ -81,6 +81,12 @@ public class StudentController {
 		List<StudentDto> students = studentService.getStudentByStatus(status);
 		return ResponseEntity.ok(students);
 	}
+	
+	@GetMapping("/count")
+	public ResponseEntity<Long> getStudentCount(){
+		Long studentCount = studentService.getStudentCount('V');
+		return ResponseEntity.ok(studentCount);
+	}
 
 	// Student Profile pic upload
 	@PostMapping("/profile/upload/{studentId}")

@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -54,6 +55,9 @@ public class Admin {
 	private String designation;
 	@Column(name = "about")
 	private String about;
+	@ManyToOne
+	@JoinColumn(name = "dept_id")
+	private Department depts;
 	@Column(name="posted_on")
 	private Date postedOn;
 	@Column(name="updated_on")

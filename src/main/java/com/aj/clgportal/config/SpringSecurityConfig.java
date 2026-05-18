@@ -41,7 +41,7 @@ public class SpringSecurityConfig {
 		return new BCryptPasswordEncoder(); // You can use other implementations if needed
 	}
 
-	public static final String[] PUBLIC_URLS = { "/", "/api/auth/**", "/api/auth/register", "/v3/api-docs", "/api-docs",
+	public static final String[] PUBLIC_URLS = {"/", "/api/auth/**", "/api/auth/register", "/v3/api-docs", "/api-docs",
 			"/v3/api-docs/**", "/v2/api-docs", "/swagger-resources/**", "/swagger-ui/**", "/swagger-ui.html",
 			"/webjars/**", "/api/user/**", "/ws/**", "/ws/info/**", "/api/notifications/**", "/api/mark-one/**",
 			"/api/mark-read/**" };

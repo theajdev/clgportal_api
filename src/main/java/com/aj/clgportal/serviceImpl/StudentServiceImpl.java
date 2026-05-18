@@ -222,4 +222,9 @@ public class StudentServiceImpl implements StudentService {
 		return lst;
 	}
 
+	@Override
+	public Long getStudentCount(Character status) {
+		return studentRepo.countByStatus(status);
+	}
+
 }

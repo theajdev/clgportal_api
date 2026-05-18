@@ -26,6 +26,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public List<Notification> getAllNotificationsByDept(Long deptId, int pageSize, int pageNumber, String sortBy, String sortDir, String search) {
 
+		System.out.println("dept Id: "+deptId+" pageSize: "+pageSize+" pageNumber: "+pageNumber+" sortBy: "+sortBy+" sortDir: "+sortDir+" search: "+search);
 	    Sort sort = sortDir.equalsIgnoreCase("asc") 
 	            ? Sort.by(sortBy).ascending() 
 	            : Sort.by(sortBy).descending();
@@ -35,5 +36,12 @@ public class NotificationServiceImpl implements NotificationService {
 	    Page<Notification> notices = repository.findByDepartmentIdAndTitleContainingIgnoreCase(deptId, search,p);
 
 	    return notices.getContent();
+	}
+
+	@Override
+	public List<Notification> getRepliedNotifications(String username, Long deptId) {
+		
+		List<Notification> replies = repository.getReplies(username, deptId);
+		return replies;
 	}
 }

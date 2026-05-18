@@ -23,4 +23,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 	List<Student> findByStatus(Character status);
 
 	List<Student> findByDepts_Id(Long deptId);
+	
+	Long countByStatus(Character status);
 }

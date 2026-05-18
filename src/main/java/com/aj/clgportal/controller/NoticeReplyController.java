@@ -22,25 +22,32 @@ public class NoticeReplyController {
 
 	@Autowired
 	private NoticeReplyService noticeReplyService;
-
-	@PostMapping("/{id}/reply")
-	public ResponseEntity<?> replyToNotice(@PathVariable Long id, @RequestBody NoticeReply reply,
+	
+	@PostMapping("/{notificationId}/reply")
+	public ResponseEntity<?> replyToNotice(@PathVariable Long notificationId, @RequestBody NoticeReply reply,
 			Authentication authentication) {
 
 		Long deptId = noticeReplyService.getUserDeptId(authentication);
 
 		reply.setUsername(authentication.getName()); // sender
 
-		Long noticeId = noticeReplyService.getNoticeId(id);
+		Long noticeId = noticeReplyService.getNoticeId(notificationId);
 
 		noticeReplyService.addReply(noticeId, reply, deptId, authentication);
 
 		return ResponseEntity.ok("Reply added");
 	}
 
-	@GetMapping("/{id}/replies")
-	public ResponseEntity<?> getReplies(@PathVariable Long id) {
-		List<NoticeReplyDto> repliesByNotice = noticeReplyService.getRepliesByNotice(id);
+	@GetMapping("/{noticeId}/replies")
+	public ResponseEntity<?> getReplies(@PathVariable Long noticeId) {
+		List<NoticeReplyDto> repliesByNotice = noticeReplyService.getRepliesByNotice(noticeId);
 		return ResponseEntity.ok(repliesByNotice);
+	}
+	
+	@GetMapping("/replies")
+	public ResponseEntity<?> getNotificationsReplies(Authentication authentication){
+		System.out.println("Authentication: "+authentication);
+		List<NoticeReplyDto> notificationsReply = noticeReplyService.getNotificationsReply(authentication);
+		return ResponseEntity.ok(notificationsReply);
 	}
 }

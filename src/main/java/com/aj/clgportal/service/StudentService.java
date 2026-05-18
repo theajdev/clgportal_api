@@ -16,4 +16,5 @@ public interface StudentService {
 	public Long getMaxStudentId();
 	public void resetStudentSequence(Long nextVal);
 	public List<StudentDto> getStudentByStatus(Character status);
+	public Long getStudentCount(Character status);
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,15 +24,21 @@ import com.aj.clgportal.service.NotificationUserService;
 @CrossOrigin(origins = "http://localhost:3000")
 public class NotificationController {
 
+    private final SecurityFilterChain securityFilterChain;
+
 	@Autowired
 	private NotificationUserService notificationService;
 
 	@Autowired
 	private NotificationService notificationServ;
 
-	@GetMapping("/notifications/unread/{username}")
-	public List<NotificationUser> getUnread(@PathVariable String username) {
-		return notificationService.getUnreadForCurrentUser(username);
+    NotificationController(SecurityFilterChain securityFilterChain) {
+        this.securityFilterChain = securityFilterChain;
+    }
+
+	@GetMapping("/notifications/unread/{username}/{deptId}")
+	public List<NotificationUser> getUnread(@PathVariable String username, @PathVariable Long deptId) {
+		return notificationService.getUnreadForCurrentUser(username, deptId);
 	}
 
 	@GetMapping("notifications/{deptId}")
@@ -49,9 +56,9 @@ public class NotificationController {
 		return notificationServ.getNotificationDetails(notificationId);
 	}
 
-	@PutMapping("/notifications/mark-all-read/{username}")
-	public ResponseEntity<?> markAll(@PathVariable String username) {
-		notificationService.markAllAsRead(username);
+	@PutMapping("/notifications/mark-all-read/{username}/{deptId}")
+	public ResponseEntity<?> markAll(@PathVariable String username, @PathVariable Long deptId) {
+		notificationService.markAllAsRead(username, deptId);
 		return ResponseEntity.ok("All marked as read");
 	}
 
@@ -59,5 +66,11 @@ public class NotificationController {
 	public ResponseEntity<?> markOne(@PathVariable Long notificationId, @PathVariable String username) {
 		notificationService.markOneAsRead(notificationId, username);
 		return ResponseEntity.ok("Marked one as read");
+	}
+	
+	@GetMapping("/notifications/{deptId}/{username}/replies")
+	public ResponseEntity<?> getNotificationsReplies(@PathVariable String username, @PathVariable Long deptId){
+		List<Notification> repliedNotifications = notificationServ.getRepliedNotifications(username, deptId);
+		return ResponseEntity.ok(repliedNotifications);
 	}
 }

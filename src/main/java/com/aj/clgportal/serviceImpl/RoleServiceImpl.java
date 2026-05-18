@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.aj.clgportal.dto.RoleDetailsProjection;
 import com.aj.clgportal.dto.RoleDto;
 import com.aj.clgportal.entity.Role;
 import com.aj.clgportal.exception.ResourceNotFoundException;
@@ -23,7 +24,7 @@ import jakarta.persistence.PersistenceContext;
 public class RoleServiceImpl implements RoleService {
 
 	@Autowired
-	RoleRepository userTypeRepo;
+	RoleRepository roleRepo;
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -31,7 +32,7 @@ public class RoleServiceImpl implements RoleService {
 	@Override
 	public RoleDto createUserType(RoleDto roleDto) {
 		String roleDesc = "ROLE_" + roleDto.getRoleDesc().toUpperCase();
-		if (userTypeRepo.existsByRoleDesc(roleDesc)) {
+		if (roleRepo.existsByRoleDesc(roleDesc)) {
 			throw new DuplicateResourceException(roleDto.getRoleDesc() + " user type already exists.");
 		} else if (roleDesc.contains("ROLE_ROLE_")) {
 			throw new DuplicateResourceException("ROLE_ is not allowed.");
@@ -40,7 +41,7 @@ public class RoleServiceImpl implements RoleService {
 			role.setRoleDesc(roleDesc);
 			role.setRoleDisp(roleDto.getRoleDesc().toUpperCase());
 			role.setStatus(roleDto.getStatus());
-			Role save = userTypeRepo.save(role);
+			Role save = roleRepo.save(role);
 			RoleDto newUserType = UserTypeToDto(save);
 			return newUserType;
 		}
@@ -53,12 +54,12 @@ public class RoleServiceImpl implements RoleService {
 			throw new DuplicateResourceException("ROLE_ is not allowed.");
 		} else {
 
-			Role role = userTypeRepo.findById(id)
+			Role role = roleRepo.findById(id)
 					.orElseThrow(() -> new ResourceNotFoundException("User type", "id", id));
 			role.setRoleDesc(roleDesc);
 			role.setRoleDisp(roleDto.getRoleDesc().toUpperCase());
 			role.setStatus(roleDto.getStatus());
-			Role updatedUserType = userTypeRepo.save(role);
+			Role updatedUserType = roleRepo.save(role);
 			RoleDto usertype = UserTypeToDto(updatedUserType);
 			return usertype;
 		}
@@ -66,20 +67,20 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public void deleteUserType(long id) {
-		Role role = userTypeRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User type", "id", id));
-		userTypeRepo.delete(role);
+		Role role = roleRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User type", "id", id));
+		roleRepo.delete(role);
 	}
 
 	@Override
 	public RoleDto getUserTypeById(long id) {
-		Role role = userTypeRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User type", "id", id));
+		Role role = roleRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User type", "id", id));
 		RoleDto roleDto = UserTypeToDto(role);
 		return roleDto;
 	}
 
 	@Override
 	public List<RoleDto> getAllUserTypes() {
-		List<Role> list = userTypeRepo.findAll();
+		List<Role> list = roleRepo.findAll();
 		List<RoleDto> lst = list.stream().map(users -> UserTypeToDto(users)).collect(Collectors.toList());
 		lst.sort(Comparator.comparing(RoleDto::getId));
 		return lst;
@@ -87,7 +88,7 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public List<RoleDto> getUserTypesByStatus(Character str) {
-		List<Role> list = userTypeRepo.findByStatus(str);
+		List<Role> list = roleRepo.findByStatus(str);
 		List<RoleDto> lst = list.stream().map(users -> UserTypeToDto(users)).collect(Collectors.toList());
 		lst.sort(Comparator.comparing(RoleDto::getId));
 		return lst;
@@ -95,7 +96,7 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public Long getMaxRoleId() {
-		Long maxRoleId = userTypeRepo.findMaxRoleId();
+		Long maxRoleId = roleRepo.findMaxRoleId();
 		return maxRoleId;
 	}
 
@@ -122,7 +123,12 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public Long getRoleCount(Character status) {
-		Long RoleCount = userTypeRepo.countByStatus(status);
+		Long RoleCount = roleRepo.countByStatus(status);
 		return RoleCount;
+	}
+
+	@Override
+	public List<RoleDetailsProjection> getRoleDetails(Integer roleId) {
+		return roleRepo.getRoleDetails(roleId);
 	}
 }

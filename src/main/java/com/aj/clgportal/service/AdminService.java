@@ -10,4 +10,5 @@ public interface AdminService {
 	public void deleteAdmin(long id);
 	public AdminDto getAdminDetailsById(long id);
 	public List<AdminDto> getAllAdminsList();
+	public Long getAdminCount(Character status);
 }

@@ -2,6 +2,7 @@ package com.aj.clgportal.service;
 
 import java.util.List;
 
+import com.aj.clgportal.dto.RoleDetailsProjection;
 import com.aj.clgportal.dto.RoleDto;
 
 public interface RoleService {
@@ -14,4 +15,5 @@ public interface RoleService {
 	public Long getMaxRoleId();
 	public void resetRoleSequence(Long nextVal);
 	public Long getRoleCount(Character status);
+	public List<RoleDetailsProjection> getRoleDetails(Integer roleId);
 }

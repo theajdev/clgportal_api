@@ -69,6 +69,12 @@ public class AdminController {
 		List<AdminDto> list = adminService.getAllAdminsList();
 		return ResponseEntity.ok(list);
 	}
+	
+	@GetMapping("/count")
+	public ResponseEntity<Long> getAdminCount(){
+		Long adminCount = adminService.getAdminCount('V');
+		return ResponseEntity.ok(adminCount);
+	}
 
 	// Teacher Profile pic upload
 	@PostMapping("/profile/upload/{adminId}")

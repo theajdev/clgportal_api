@@ -48,6 +48,11 @@ public class NoticeReply {
 
 	@ManyToOne
 	@JoinColumn(name = "notice_id")
-	@JsonIgnore // 🔥 ADD THIS
+	@JsonIgnore
 	private Notice notice;
+
+	@ManyToOne
+	@JoinColumn(name = "notification_id")
+	@JsonIgnore
+	private Notification notification;
 }

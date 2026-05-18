@@ -25,5 +25,6 @@ public class AdminDto {
 	private String about;
 	private Date postedOn;
 	private Date updatedOn;
+	private long deptId;
 	
 }
