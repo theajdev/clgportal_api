@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 ## **🎯College Portal APIs With Real-Time Notification Service**
 This project demonstrates a real-time notification service using Spring Boot for the backend and React for the frontend. The service allows for real-time updates via WebSockets, ensuring that notifications are pushed to the client instantly.
 
@@ -100,3 +101,5 @@ git clone https://github.com/theajdev/clgportal_ui.git
 cd clgportal_ui
 ```
 
+=======
+>>>>>>> Stashed changes

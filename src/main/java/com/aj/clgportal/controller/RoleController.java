@@ -2,7 +2,6 @@ package com.aj.clgportal.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,19 +15,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aj.clgportal.dto.ApiResponse;
-import com.aj.clgportal.dto.RoleDetailsProjection;
+import com.aj.clgportal.dto.RoleDetailProjection;
 import com.aj.clgportal.dto.RoleDto;
 import com.aj.clgportal.service.RoleService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/role")
+@RequiredArgsConstructor
 public class RoleController {
 
-	@Autowired
-	public RoleService roleService;
-
+	public final RoleService roleService;
+	
 	@PostMapping("/")
 	public ResponseEntity<RoleDto> NewUserType(@Valid @RequestBody RoleDto roleDto) {
 		RoleDto userType = roleService.createUserType(roleDto);
@@ -62,20 +62,20 @@ public class RoleController {
 	}
 
 	@GetMapping("/status/{status}")
-	public ResponseEntity<List<RoleDto>> getUserType(@PathVariable Character status) {
-		List<RoleDto> userType = roleService.getUserTypesByStatus(status);
+	public ResponseEntity<List<RoleDto>> getUserType(@PathVariable Boolean status) {
+		List<RoleDto> userType = roleService.getRolesByStatus(status);
 		return ResponseEntity.ok(userType);
 	}
 
 	@GetMapping("/count")
 	public ResponseEntity<Long> getRoleCount() {
-		Long roleCount = roleService.getRoleCount('V');
+		Long roleCount = roleService.getRoleCount();
 		return ResponseEntity.ok(roleCount);
 	}
-
+	
 	@GetMapping("/details")
-	public List<RoleDetailsProjection> getRoles(@RequestParam(required = false) Integer roleId) {
-		List<RoleDetailsProjection> roleDetails = roleService.getRoleDetails(roleId);
-		return roleDetails;
+	public ResponseEntity<List<RoleDetailProjection>> getUsersByRoleId(@RequestParam(defaultValue = "1") long roleId){
+		List<RoleDetailProjection> users = roleService.getRoleDetails(roleId);
+		return ResponseEntity.ok(users);
 	}
 }

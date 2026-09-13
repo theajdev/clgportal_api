@@ -2,7 +2,6 @@ package com.aj.clgportal.serviceImpl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +18,7 @@ import com.aj.clgportal.entity.Department;
 import com.aj.clgportal.entity.Role;
 import com.aj.clgportal.entity.Student;
 import com.aj.clgportal.entity.Teacher;
+import com.aj.clgportal.exception.DuplicateResourceException;
 import com.aj.clgportal.exception.ResourceNotFoundException;
 import com.aj.clgportal.repository.DeptRespository;
 import com.aj.clgportal.repository.RoleRepository;
@@ -68,8 +68,39 @@ public class StudentServiceImpl implements StudentService {
 		}
 
 		Department department = deptRepo.findById(studDto.getDeptId())
-				.orElseThrow(() -> new ResourceNotFoundException("Department", "department id", studDto.getDeptId()));
+				.orElseThrow(() -> new ResourceNotFoundException("Department", "department id",
+						String.valueOf(studDto.getDeptId())));
 		String teacherUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+
+		boolean exists = studentRepo.existsByFirstNameAndMiddleNameAndLastName(studDto.getFirstName(),
+				studDto.getMiddleName(), studDto.getLastName());
+
+		if (exists) {
+
+			throw new DuplicateResourceException(studDto.getFirstName() + " "
+					+ (studDto.getMiddleName() != null && !studDto.getMiddleName().isBlank()
+							? studDto.getMiddleName() + " "
+							: "")
+					+ studDto.getLastName() + " " + "student already exists!");
+
+		}
+
+		boolean emailExists = studentRepo.existsByEmail(studDto.getEmail());
+
+		if (emailExists) {
+			throw new DuplicateResourceException(studDto.getEmail() + " email already exists!");
+		}
+
+		boolean usernameExists = studentRepo.existsByUsername(studDto.getUsername());
+		if (usernameExists) {
+			throw new DuplicateResourceException(studDto.getUsername() + " username already exists!");
+		}
+
+		boolean mobileNoExists = studentRepo.existsByMobileNo(studDto.getMobileNo());
+		if (mobileNoExists) {
+			throw new DuplicateResourceException(studDto.getMobileNo() + " mobile number already exists");
+		}
+
 		Student student = new Student();
 		student.setFirstName(studDto.getFirstName());
 		student.setMiddleName(studDto.getMiddleName());
@@ -88,10 +119,10 @@ public class StudentServiceImpl implements StudentService {
 		Teacher teacher = teacherRepo.findByUsernameOrEmail(teacherUsername, teacherUsername);
 		student.setTeacher(teacher);
 		student.setDepts(department);
-		List<Role> roles = new ArrayList<>();
-		Role userRole = roleRepo.findByName("ROLE_STUDENT");
-		roles.add(userRole);
-		student.setRoles(roles);
+		Role studentRole = roleRepo.findByRoleName("ROLE_STUDENT")
+				.orElseThrow(() -> new ResourceNotFoundException("Role", "roleName", "ROLE_STUDENT"));
+
+		student.setRoles(List.of(studentRole));
 
 		Student newStudent = studentRepo.save(student);
 		StudentDto stud = StudentToDto(newStudent);
@@ -114,10 +145,41 @@ public class StudentServiceImpl implements StudentService {
 		}
 
 		Department department = deptRepo.findById(studDto.getDeptId())
-				.orElseThrow(() -> new ResourceNotFoundException("Department", "department id", studDto.getDeptId()));
+				.orElseThrow(() -> new ResourceNotFoundException("Department", "department id",
+						String.valueOf(studDto.getDeptId())));
 		String teacherUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+
+		boolean exists = studentRepo.existsByFirstNameAndMiddleNameAndLastName(studDto.getFirstName(),
+				studDto.getMiddleName(), studDto.getLastName());
+
+		if (exists) {
+
+			throw new DuplicateResourceException(studDto.getFirstName() + " "
+					+ (studDto.getMiddleName() != null && !studDto.getMiddleName().isBlank()
+							? studDto.getMiddleName() + " "
+							: "")
+					+ studDto.getLastName() + " " + "student already exists!");
+
+		}
+
+		boolean emailExists = studentRepo.existsByEmail(studDto.getEmail());
+
+		if (emailExists) {
+			throw new DuplicateResourceException(studDto.getEmail() + " email already exists!");
+		}
+
+		boolean usernameExists = studentRepo.existsByUsername(studDto.getUsername());
+		if (usernameExists) {
+			throw new DuplicateResourceException(studDto.getUsername() + " username already exists!");
+		}
+
+		boolean mobileNoExists = studentRepo.existsByMobileNo(studDto.getMobileNo());
+		if (mobileNoExists) {
+			throw new DuplicateResourceException(studDto.getMobileNo() + " mobile number already exists");
+		}
+
 		Student student = studentRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Student", "student id", id));
+				.orElseThrow(() -> new ResourceNotFoundException("Student", "student id", String.valueOf(id)));
 		student.setFirstName(studDto.getFirstName());
 		student.setMiddleName(studDto.getMiddleName());
 		student.setLastName(studDto.getLastName());
@@ -138,10 +200,10 @@ public class StudentServiceImpl implements StudentService {
 		Teacher teacher = teacherRepo.findByUsernameOrEmail(teacherUsername, teacherUsername);
 		student.setTeacher(teacher);
 		student.setDepts(department);
-		List<Role> roles = new ArrayList<>();
-		Role userRole = roleRepo.findByName("ROLE_STUDENT");
-		roles.add(userRole);
-		student.setRoles(roles);
+		Role studentRole = roleRepo.findByRoleName("ROLE_STUDENT")
+				.orElseThrow(() -> new ResourceNotFoundException("Role", "roleName", "ROLE_STUDENT"));
+
+		student.setRoles(List.of(studentRole));
 		Student updatedStudent = studentRepo.save(student);
 		StudentDto stud = StudentToDto(updatedStudent);
 		return stud;
@@ -150,14 +212,14 @@ public class StudentServiceImpl implements StudentService {
 	@Override
 	public void deleteStudent(long id) {
 		Student student = studentRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Student", "student id", id));
+				.orElseThrow(() -> new ResourceNotFoundException("Student", "student id", String.valueOf(id)));
 		studentRepo.delete(student);
 	}
 
 	@Override
 	public StudentDto getStudentById(long id) {
 		Student student = studentRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Student", "student id", id));
+				.orElseThrow(() -> new ResourceNotFoundException("Student", "student id", String.valueOf(id)));
 		StudentDto studentToDto = StudentToDto(student);
 		studentToDto.setDeptId(student.getDepts().getId());
 		return studentToDto;

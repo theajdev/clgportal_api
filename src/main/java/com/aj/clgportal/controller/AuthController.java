@@ -52,7 +52,12 @@ public class AuthController {
 		 * .body("Captcha verification failed. Please try again."); }
 		 */
 
+		System.out.println("UserName: "+loginDto.getUsernameOrEmail());
+		System.out.println("Password: "+loginDto.getPassword());
+		System.out.println("Auth: "+loginDto.getAuthority());
 		UserResponseDto user = authServ.getUserDetailsByRole(loginDto);
+		
+		System.out.println("UserDetails: "+user.getEmail()+user.getName()+user.getToken()+user.getType()+user.getId());
 
 		JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
 

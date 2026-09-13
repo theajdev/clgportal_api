@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.aj.clgportal.dto.ApiResponse;
 import com.aj.clgportal.dto.ErrorResponse;
+import com.aj.clgportal.payloads.ResourceAlreadyExists;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -42,14 +43,14 @@ public class GlobalExceptionHandler {
 		});
 		return new ResponseEntity<Map<String, String>>(resp, HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@ExceptionHandler(DuplicateResourceException.class)
-	public ResponseEntity<Map<String,Object>> handleRoleNameExistsException(DuplicateResourceException ex){
-		Map<String, Object> map=new HashMap<>();
+	public ResponseEntity<Map<String, Object>> handleRoleNameExistsException(DuplicateResourceException ex) {
+		Map<String, Object> map = new HashMap<>();
 		map.put("error", "Duplicate resourse already exists.");
 		map.put("message", ex.getMessage());
 		map.put("status", HttpStatus.CONFLICT);
-		
-		return new ResponseEntity<>(map,HttpStatus.CONFLICT);
+
+		return new ResponseEntity<>(map, HttpStatus.CONFLICT);
 	}
 }

@@ -15,7 +15,11 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
 	Student findByUsernameOrEmail(String username, String email);
 
+	Boolean existsByFirstNameAndMiddleNameAndLastName(String firstName, String middleName, String lastName);
+
 	Boolean existsByUsername(String username);
+
+	Boolean existsByMobileNo(long mobileNo);
 
 	@Query(value = "select COALESCE(max(s.student_id),0) from tbl_student s", nativeQuery = true)
 	Long findMaxStudentId();
@@ -23,6 +27,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 	List<Student> findByStatus(Character status);
 
 	List<Student> findByDepts_Id(Long deptId);
-	
+
 	Long countByStatus(Character status);
 }

@@ -1,7 +1,9 @@
 package com.aj.clgportal.entity;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -71,5 +73,13 @@ public class Student {
 	@ManyToOne
 	@JoinColumn(name="guardian_notice_id")
 	private GuardianNotice guardianNotice;
+	
+	@ManyToMany
+    @JoinTable(
+        name = "student_subject",
+        joinColumns = @JoinColumn(name = "student_id"),
+        inverseJoinColumns = @JoinColumn(name = "subject_id")
+    )
+    private Set<Subject> subjects = new HashSet<>();
 	
 }

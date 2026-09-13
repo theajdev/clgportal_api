@@ -1,0 +1,52 @@
+================================================================================
+CLGPORTAL SYSTEM DOCUMENTATION & CAMPUS KNOWLEDGE BASE
+================================================================================
+
+[SYSTEM OVERVIEW]
+Project Name: ClgPortal (College Management & Information System)
+Version: 1.0.0
+Description: ClgPortal is a unified digital platform built for managing student academic records, course details, campus admissions, and fee administration processing. 
+
+--------------------------------------------------------------------------------
+1. ACADEMIC AND COURSE STRUCTURE
+--------------------------------------------------------------------------------
+- The college offers three primary technical tracks:
+  * Computer Science & Engineering (CSE) - Department ID: DEPT-01
+  * Information Technology (IT) - Department ID: DEPT-02
+  * Electronics & Telecommunication (ENTC) - Department ID: DEPT-03
+
+- Semester Structure: 
+  * Each academic year consists of 2 semesters (Odd Semester and Even Semester).
+  * A minimum attendance threshold of 75% is strictly mandatory in every registered course to be eligible to sit for final semester examinations.
+
+--------------------------------------------------------------------------------
+2. FEE STRUCTURE AND PAYMENT POLICIES
+--------------------------------------------------------------------------------
+- Academic Fee Breakdown per Semester:
+  * Tuition Fee: INR 65,000
+  * Development Fee: INR 10,000
+  * Laboratory & Library Fee: INR 5,000
+  * Total Base Semester Fee: INR 80,000
+
+- Refund Policy Guidelines:
+  * Cancellation requests submitted within 15 days of formal admission receive a 90% tuition fee refund.
+  * Cancellation requests submitted between 16 to 30 days of admission receive a 50% tuition fee refund.
+  * No fee refunds are processed for cancellations initiated after 30 days of the admission date.
+  * Late Fee Penalty: A grace period of 7 days is provided past the due date. A flat penalty of INR 100 per day is applied starting on the 8th day past the deadline.
+
+--------------------------------------------------------------------------------
+3. ADMISSION AND PORTAL LOG IN LAWS
+--------------------------------------------------------------------------------
+- Account Generation: New student accounts are initialized only upon the verification of official background checks and submission of a valid, municipal-issued birth certificate.
+- Authentication Protocols: 
+  * Access to internal student and faculty panels requires secure Single Sign-On (SSO) authentication using verified Google Institutional Email Accounts.
+  * Sessions are guarded by short-lived JSON Web Tokens (JWT) that expire automatically after 60 minutes of inactivity.
+
+--------------------------------------------------------------------------------
+4. CAMPUS FACILITIES & EMERGENCY CONTACTS
+--------------------------------------------------------------------------------
+- Central Library Timings: 
+  * Weekdays (Monday to Friday): 08:00 AM to 08:00 PM
+  * Weekends (Saturday and Sunday): 09:00 AM to 04:00 PM
+- Campus Health Clinic: Located in Block-C, operating 24/7 for medical emergencies.
+- Technical Support Desk: Contact support via portal ticket or email at support@clgportal.edu for system bugs, login errors, or network outages.

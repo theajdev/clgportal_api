@@ -1,9 +1,11 @@
 package com.aj.clgportal.security;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -36,7 +38,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
 			return bearerToken.substring(7, bearerToken.length());
 		}
-
+		
+		
 		return null;
 	}
 
@@ -59,16 +62,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		// Validate token
 		if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
 			// get username from token
-			String username = jwtTokenProvider.getUsername(token);
+			String username =
+			        jwtTokenProvider.getUsername(token);
 
-			UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+			List<String> roles =
+			        jwtTokenProvider.getRoles(token);
 
-			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-					userDetails, null, userDetails.getAuthorities());
+			List<String> permissions =
+			        jwtTokenProvider.getPermissions(token);
+			
+			
+			
 
-			authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+			List<SimpleGrantedAuthority> authorities =
+			        roles.stream()
+			             .map(SimpleGrantedAuthority::new)
+			             .toList();
+			
+			UsernamePasswordAuthenticationToken authenticationToken =
+			        new UsernamePasswordAuthenticationToken(
+			                username,
+			                null,
+			                authorities);
 
-			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+			authenticationToken.setDetails(permissions);
+			
+			SecurityContextHolder.getContext()
+	        .setAuthentication(authenticationToken);
 		}
 
 		filterChain.doFilter(request, response);

@@ -45,7 +45,7 @@ public class DeptServiceImpl implements DeptService {
 	@Override
 	public DepartmentDto updateDepartment(DepartmentDto deptDto, long id) {
 		Department dept = deptRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Department", "department id", id));
+				.orElseThrow(() -> new ResourceNotFoundException("Department", "department id", String.valueOf(id)));
 		dept.setDeptDesc(deptDto.getDeptDesc());
 		dept.setStatus(deptDto.getStatus());
 		Department newDept = deptRepo.save(dept);
@@ -56,7 +56,7 @@ public class DeptServiceImpl implements DeptService {
 	@Override
 	public void deleteDepartment(long id) {
 		Department dept = deptRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Department", "department id", id));
+				.orElseThrow(() -> new ResourceNotFoundException("Department", "department id", String.valueOf(id)));
 		deptRepo.delete(dept);
 	}
 
@@ -80,7 +80,7 @@ public class DeptServiceImpl implements DeptService {
 	@Override
 	public DepartmentDto getDepartmentById(long id) {
 		Department dept = deptRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Department", "department id", id));
+				.orElseThrow(() -> new ResourceNotFoundException("Department", "department id", String.valueOf(id)));
 		DepartmentDto deptDto = deptToDto(dept);
 		return deptDto;
 	}

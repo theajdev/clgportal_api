@@ -16,6 +16,7 @@ import com.aj.clgportal.dto.TeacherDto;
 import com.aj.clgportal.entity.Department;
 import com.aj.clgportal.entity.Role;
 import com.aj.clgportal.entity.Teacher;
+import com.aj.clgportal.exception.DuplicateResourceException;
 import com.aj.clgportal.exception.ResourceNotFoundException;
 import com.aj.clgportal.repository.DeptRespository;
 import com.aj.clgportal.repository.RoleRepository;
@@ -47,22 +48,55 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	public TeacherDto newTeacher(TeacherDto teacherDto) {
-		
+
 		Date currentDate = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        String formattedDate = formatter.format(currentDate);
-        
-        Date postedDate=null;
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		String formattedDate = formatter.format(currentDate);
+
+		Date postedDate = null;
 		try {
 			postedDate = formatter.parse(formattedDate);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		Department department = deptRepo.findById(teacherDto.getDeptId()).orElseThrow(
-				() -> new ResourceNotFoundException("Department", "department id", teacherDto.getDeptId()));
+				() -> new ResourceNotFoundException("Department", "department id", String.valueOf(teacherDto.getDeptId())));
+		
+
+		boolean exists = teacherRepo.existsByFirstNameAndMiddleNameAndLastName(teacherDto.getFirstName(),
+				teacherDto.getMiddleName(), teacherDto.getLastName());
+
+		if (exists) {
+
+			throw new DuplicateResourceException(teacherDto.getFirstName() + " "
+					+ (teacherDto.getMiddleName() != null
+			        && !teacherDto.getMiddleName().isBlank()
+			        ? teacherDto.getMiddleName() + " "
+			        : "")
+					+ teacherDto.getLastName() + " " + "teacher already exists!");
+
+		}
+
+		boolean emailExists = teacherRepo.existsByEmail(teacherDto.getEmail());
+
+		if (emailExists) {
+			throw new DuplicateResourceException(teacherDto.getEmail() + " email already exists!");
+		}
+
+		boolean usernameExists = teacherRepo.existsByUsername(teacherDto.getUsername());
+		if (usernameExists) {
+			throw new DuplicateResourceException(teacherDto.getUsername() + " username already exists!");
+		}
+
+		boolean mobileNoExists = teacherRepo.existsByMobileNo(teacherDto.getMobileNo());
+		if (mobileNoExists) {
+			throw new DuplicateResourceException(teacherDto.getMobileNo() + " mobile number already exists");
+		}
+		
 		Teacher teacher = new Teacher();
+
 		teacher.setFirstName(teacherDto.getFirstName());
 		teacher.setMiddleName(teacherDto.getMiddleName());
 		teacher.setLastName(teacherDto.getLastName());
@@ -77,10 +111,14 @@ public class TeacherServiceImpl implements TeacherService {
 		teacher.setPassword(passwordEncoder.encode(teacherDto.getPassword()));
 		teacher.setProfilePic(teacherDto.getProfilePic());
 		teacher.setStatus(teacherDto.getStatus());
-		List<Role> roles = new ArrayList<>();
-		Role userRole = roleRepo.findByName("ROLE_TEACHER");
-		roles.add(userRole);
-		teacher.setRoles(roles);
+		Role teacherRole = roleRepo.findByRoleName("ROLE_TEACHER")
+		        .orElseThrow(() ->
+		                new ResourceNotFoundException(
+		                        "Role",
+		                        "roleName",
+		                        "ROLE_STUDENT"));
+
+		teacher.setRoles(List.of(teacherRole));
 		teacher.setDepts(department);
 		teacherDto.setDeptId(department.getId());
 		Teacher newTeacher = teacherRepo.save(teacher);
@@ -91,24 +129,55 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	public TeacherDto updateTeacher(TeacherDto teacherDto, long id) {
-		
+
 		Date currentDate = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        String formattedDate = formatter.format(currentDate);
-        
-        Date updatedDate=null;
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		String formattedDate = formatter.format(currentDate);
+
+		Date updatedDate = null;
 		try {
 			updatedDate = formatter.parse(formattedDate);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		Department department = deptRepo.findById(teacherDto.getDeptId()).orElseThrow(
-				() -> new ResourceNotFoundException("Department", "department id", teacherDto.getDeptId()));
-		Teacher teacher = teacherRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Teacher", "teacher id", id));
+				() -> new ResourceNotFoundException("Department", "department id", String.valueOf(teacherDto.getDeptId())));
 		
+		boolean exists = teacherRepo.existsByFirstNameAndMiddleNameAndLastName(teacherDto.getFirstName(),
+				teacherDto.getMiddleName(), teacherDto.getLastName());
+
+		if (exists) {
+
+			throw new DuplicateResourceException(teacherDto.getFirstName() + " "
+					+(teacherDto.getMiddleName() != null
+			        && !teacherDto.getMiddleName().isBlank()
+			        ? teacherDto.getMiddleName() + " "
+			        : "")
+					+ teacherDto.getLastName() + " " + "teacher already exists!");
+
+		}
+
+		boolean emailExists = teacherRepo.existsByEmail(teacherDto.getEmail());
+
+		if (emailExists) {
+			throw new DuplicateResourceException(teacherDto.getEmail() + " email already exists!");
+		}
+
+		boolean usernameExists = teacherRepo.existsByUsername(teacherDto.getUsername());
+		if (usernameExists) {
+			throw new DuplicateResourceException(teacherDto.getUsername() + " username already exists!");
+		}
+
+		boolean mobileNoExists = teacherRepo.existsByMobileNo(teacherDto.getMobileNo());
+		if (mobileNoExists) {
+			throw new DuplicateResourceException(teacherDto.getMobileNo() + " mobile number already exists");
+		}
+		
+		Teacher teacher = teacherRepo.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Teacher", "teacher id", String.valueOf(id)));
+
 		teacher.setFirstName(teacherDto.getFirstName());
 		teacher.setMiddleName(teacherDto.getMiddleName());
 		teacher.setLastName(teacherDto.getLastName());
@@ -121,18 +190,22 @@ public class TeacherServiceImpl implements TeacherService {
 		teacher.setPostedOn(teacherDto.getPostedOn());
 		teacher.setUpdatedOn(updatedDate);
 		teacher.setProfilePic(teacherDto.getProfilePic());
-		
+
 		/*
 		 * if(teacherDto.getPassword() != null && !teacherDto.getPassword().isEmpty()) {
 		 * teacher.setPassword(passwordEncoder.encode(teacherDto.getPassword())); }
 		 */
-		
+
 		teacher.setStatus(teacherDto.getStatus());
 
-		List<Role> roles = new ArrayList<>();
-		Role userRole = roleRepo.findByName("ROLE_TEACHER");
-		roles.add(userRole);
-		teacher.setRoles(roles);
+		Role teacherRole = roleRepo.findByRoleName("ROLE_TEACHER")
+		        .orElseThrow(() ->
+		                new ResourceNotFoundException(
+		                        "Role",
+		                        "roleName",
+		                        "ROLE_STUDENT"));
+
+		teacher.setRoles(List.of(teacherRole));
 		teacher.setDepts(department);
 		Teacher updatedTeacher = teacherRepo.save(teacher);
 		TeacherDto teacherToDto = TeacherToDto(updatedTeacher);
@@ -143,14 +216,14 @@ public class TeacherServiceImpl implements TeacherService {
 	@Override
 	public void deleteTeacher(long id) {
 		Teacher teacher = teacherRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Teacher", "teacher id", id));
+				.orElseThrow(() -> new ResourceNotFoundException("Teacher", "teacher id",String.valueOf(id)));
 		teacherRepo.delete(teacher);
 	}
 
 	@Override
 	public TeacherDto getTeacherById(long id) {
 		Teacher teacher = teacherRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Teacher", "teacher id", id));
+				.orElseThrow(() -> new ResourceNotFoundException("Teacher", "teacher id", String.valueOf(id)));
 
 		TeacherDto teacherToDto = TeacherToDto(teacher);
 		teacherToDto.setDeptId(teacher.getDepts().getId());
@@ -159,15 +232,13 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	public List<TeacherDto> getAllTeachers() {
-		 return teacherRepo.findAll().stream()
-		            .map(teacher -> {
-		                TeacherDto dto = TeacherToDto(teacher);
-		                dto.setDeptId(teacher.getDepts().getId());
-		                return dto;
-		            })
-		            .collect(Collectors.toList());
+		return teacherRepo.findAll().stream().map(teacher -> {
+			TeacherDto dto = TeacherToDto(teacher);
+			dto.setDeptId(teacher.getDepts().getId());
+			return dto;
+		}).collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public Long getMaxTeacherId() {
 		Long maxRoleId = teacherRepo.findMaxTeacherId();
@@ -176,34 +247,30 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@PersistenceContext
 	private EntityManager entityManager;
-	
+
 	@Transactional
 	@Override
-	public void resetTeacherSequence(Long nextVal) { 
-	    String sql = "ALTER SEQUENCE tbl_teacher_seq RESTART WITH " + nextVal;
-	    entityManager.createNativeQuery(sql).executeUpdate();
+	public void resetTeacherSequence(Long nextVal) {
+		String sql = "ALTER SEQUENCE tbl_teacher_seq RESTART WITH " + nextVal;
+		entityManager.createNativeQuery(sql).executeUpdate();
 	}
-	
+
 	@Transactional
 	@Override
 	public void removeTeacherRole(Long id) {
 		String sql = "DELETE FROM teacher_roles WHERE teacher_id = :teacherId";
-	    entityManager.createNativeQuery(sql)
-	        .setParameter("teacherId", id)
-	        .executeUpdate();
+		entityManager.createNativeQuery(sql).setParameter("teacherId", id).executeUpdate();
 	}
-	
+
 	@Override
 	public List<TeacherDto> getTeacherByStatus(Character status) {
-		
-		return teacherRepo.findByStatus(status).stream()
-	            .map(teacher -> {
-	                TeacherDto dto = TeacherToDto(teacher);
-	                dto.setDeptId(teacher.getDepts().getId());
-	                return dto;
-	            })
-	            .collect(Collectors.toList());
-}
+
+		return teacherRepo.findByStatus(status).stream().map(teacher -> {
+			TeacherDto dto = TeacherToDto(teacher);
+			dto.setDeptId(teacher.getDepts().getId());
+			return dto;
+		}).collect(Collectors.toList());
+	}
 
 	public TeacherDto TeacherToDto(Teacher teacher) {
 		TeacherDto teacherDto = modelMapper.map(teacher, TeacherDto.class);

@@ -33,7 +33,7 @@ public class YearsServiceImpl implements YearsService {
 
 	@Override
 	public YearsDto updateYear(YearsDto yearsDto, long id) {
-		Years year = yearsRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Year", "year id", id));
+		Years year = yearsRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Year", "year id", String.valueOf(id)));
 		year.setYearDesc(yearsDto.getYearDesc());
 		year.setStatus(yearsDto.getStatus());
 		return null;
@@ -41,14 +41,14 @@ public class YearsServiceImpl implements YearsService {
 
 	@Override
 	public void deleteYear(long id) {
-		Years year = yearsRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Year", "year id", id));
+		Years year = yearsRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Year", "year id", String.valueOf(id)));
 		yearsRepository.delete(year);
 
 	}
 
 	@Override
 	public YearsDto getYearById(long id) {
-		Years year = yearsRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Year", "year id", id));
+		Years year = yearsRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Year", "year id", String.valueOf(id)));
 		YearsDto yearsDto = yearsToDto(year);
 		return yearsDto;
 	}

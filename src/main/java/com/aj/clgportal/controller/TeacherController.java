@@ -26,6 +26,7 @@ import com.aj.clgportal.service.ProfilePicService;
 import com.aj.clgportal.service.TeacherService;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/teacher")
@@ -41,13 +42,13 @@ public class TeacherController {
 	private String path;
 	
 	@PostMapping("/")
-	public ResponseEntity<TeacherDto> newTeacher(@RequestBody TeacherDto teacherDto){
+	public ResponseEntity<TeacherDto> newTeacher(@Valid @RequestBody TeacherDto teacherDto){
 		TeacherDto teacher = teacherServ.newTeacher(teacherDto);
 		return new ResponseEntity<TeacherDto>(teacher,HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<TeacherDto> updateTeacher(@RequestBody TeacherDto teacherDto, @PathVariable long id){
+	public ResponseEntity<TeacherDto> updateTeacher(@Valid  @RequestBody TeacherDto teacherDto, @PathVariable long id){
 		TeacherDto updatedTeacher = teacherServ.updateTeacher(teacherDto, id);
 		return ResponseEntity.ok(updatedTeacher);
 	}
@@ -86,22 +87,22 @@ public class TeacherController {
 	}
 	
 	// Teacher Profile pic upload
-		@PostMapping("/profile/upload/{teacherId}")
-		public ResponseEntity<TeacherDto> uploadPostImage(@PathVariable Long teacherId, @RequestParam MultipartFile image)
-				throws IOException {
-			String fileName = picService.uploadProfilePic(path, image);
-			TeacherDto teacher = teacherServ.getTeacherById(teacherId);
-			teacher.setProfilePic(fileName);
-			TeacherDto updateTeacher = teacherServ.updateTeacher(teacher, teacherId);
-			return new ResponseEntity<TeacherDto>(updateTeacher, HttpStatus.OK);
-		}
+	@PostMapping("/profile/upload/{teacherId}")
+	public ResponseEntity<TeacherDto> uploadPostImage(@PathVariable Long teacherId, @RequestParam MultipartFile image)
+			throws IOException {
+		String fileName = picService.uploadProfilePic(path, image);
+		TeacherDto teacher = teacherServ.getTeacherById(teacherId);
+		teacher.setProfilePic(fileName);
+		TeacherDto updateTeacher = teacherServ.updateTeacher(teacher, teacherId);
+		return new ResponseEntity<TeacherDto>(updateTeacher, HttpStatus.OK);
+	}
 		
-		// Download image
-		@GetMapping(value = "/profile/image/{imageName}", produces = MediaType.IMAGE_JPEG_VALUE)
-		public void downloadImage(@PathVariable String imageName, HttpServletResponse response)
-				throws IOException {
-			InputStream resource = picService.getResource(path, imageName);
-			response.setContentType(org.springframework.http.MediaType.IMAGE_JPEG_VALUE);
-			org.springframework.util.StreamUtils.copy(resource, response.getOutputStream());
-		}
+	// Download image
+	@GetMapping(value = "/profile/image/{imageName}", produces = MediaType.IMAGE_JPEG_VALUE)
+	public void downloadImage(@PathVariable String imageName, HttpServletResponse response)
+			throws IOException {
+		InputStream resource = picService.getResource(path, imageName);
+		response.setContentType(org.springframework.http.MediaType.IMAGE_JPEG_VALUE);
+		org.springframework.util.StreamUtils.copy(resource, response.getOutputStream());
+	}
 }

@@ -51,7 +51,7 @@ public class NotificationController {
 		return notificationServ.getAllNotificationsByDept(deptId, pageSize, pageNumber, sortBy, sortDir, search);
 	}
 
-	@GetMapping("/notification/{notificationId}")
+	@GetMapping("/reply/{notificationId}")
 	public List<Notification> getNotificationDetails(@PathVariable Long notificationId) {
 		return notificationServ.getNotificationDetails(notificationId);
 	}

@@ -1,6 +1,7 @@
 package com.aj.clgportal.security;
 
 import java.util.Date;
+import java.util.List;
 import java.security.Key;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -23,15 +24,35 @@ public class JwtTokenProvider {
 	private long jwtExpirationDate;
 
 	// Generate JWT Token
-	public String generateToken(Authentication auth) throws UserNameNotFoundException {
-		String username = auth.getName();
-		Date currentDate = new Date();
-		Date expirationDate = new Date(currentDate.getTime() + jwtExpirationDate);
+	public String generateToken(Authentication auth) {
 
-		String token = Jwts.builder().setSubject(username).setIssuedAt(new Date()).setExpiration(expirationDate)
-				.signWith(key()).compact();
+	    CustomUserDetails user =
+	            (CustomUserDetails) auth.getPrincipal();
 
-		return token;
+	    Date currentDate = new Date();
+	    Date expirationDate =
+	            new Date(currentDate.getTime() + jwtExpirationDate);
+
+	    return Jwts.builder()
+	            .setSubject(user.getUsername())
+
+	            .claim(
+	                "roles",
+	                user.getAuthorities()
+	                        .stream()
+	                        .map(a -> a.getAuthority())
+	                        .toList()
+	            )
+
+	            .claim(
+	                "permissions",
+	                user.getPermissions()
+	            )
+
+	            .setIssuedAt(currentDate)
+	            .setExpiration(expirationDate)
+	            .signWith(key())
+	            .compact();
 	}
 
 	// decode secret key
@@ -52,5 +73,26 @@ public class JwtTokenProvider {
 	public boolean validateToken(String token) {
 		Jwts.parserBuilder().setSigningKey(key()).build().parse(token);
 		return true;
+	}
+	
+	public Claims getClaims(String token) {
+
+	    return Jwts.parserBuilder()
+	            .setSigningKey(key())
+	            .build()
+	            .parseClaimsJws(token)
+	            .getBody();
+	}
+	
+	public List<String> getPermissions(String token) {
+
+	    return getClaims(token)
+	            .get("permissions", List.class);
+	}
+	
+	public List<String> getRoles(String token) {
+
+	    return getClaims(token)
+	            .get("roles", List.class);
 	}
 }

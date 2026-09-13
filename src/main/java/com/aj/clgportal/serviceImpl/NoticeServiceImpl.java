@@ -196,7 +196,7 @@ public class NoticeServiceImpl implements NoticeService {
 		}
 
 		Notice notice = noticeRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("notice", "notice id", id));
+				.orElseThrow(() -> new ResourceNotFoundException("notice", "notice id",String.valueOf(id)));
 		notice.setNoticeTitle(dto.getNoticeTitle());
 		notice.setNoticeDesc(dto.getNoticeDesc());
 		notice.setStatus(dto.getStatus());
@@ -295,7 +295,7 @@ public class NoticeServiceImpl implements NoticeService {
 	@Override
 	public void removeNotice(Long id) {
 		Notice notice = noticeRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("notice", "notice id", id));
+				.orElseThrow(() -> new ResourceNotFoundException("notice", "notice id", String.valueOf(id)));
 		noticeRepo.delete(notice);
 
 		String folderPath = uploadDir + File.separator + "notices" + File.separator + id;
@@ -316,7 +316,7 @@ public class NoticeServiceImpl implements NoticeService {
 	@Override
 	public NoticeDto getNoticeById(Long id) {
 		Notice notice = noticeRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Notice", "notice id", id));
+				.orElseThrow(() -> new ResourceNotFoundException("Notice", "notice id", String.valueOf(id)));
 
 		return noticeToDto(notice); // All deptIds already handled in this method
 	}

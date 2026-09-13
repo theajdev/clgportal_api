@@ -8,5 +8,100 @@
     "name": "app.jwt-expiration-milliseconds",
     "type": "java.lang.String",
     "description": "A description for 'app.jwt-expiration-milliseconds'"
+  },
+  {
+    "name": "openai.api.key",
+    "type": "java.lang.String",
+    "description": "A description for 'openai.api.key'"
+  },
+  {
+    "name": "openai.api.url",
+    "type": "java.lang.String",
+    "description": "A description for 'openai.api.url'"
+  },
+  {
+    "name": "spring.ai.vectorstore.pgvector.dimensions",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.vectorstore.pgvector.dimensions'"
+  },
+  {
+    "name": "spring.ai.vectorstore.pgvector.distance-type",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.vectorstore.pgvector.distance-type'"
+  },
+  {
+    "name": "spring.ai.vectorstore.pgvector.url",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.vectorstore.pgvector.url'"
+  },
+  {
+    "name": "spring.ai.vectorstore.pgvector.username",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.vectorstore.pgvector.username'"
+  },
+  {
+    "name": "spring.ai.vectorstore.pgvector.password",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.vectorstore.pgvector.password'"
+  },
+  {
+    "name": "spring.ai.vectorstore.pgvector.index-type",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.vectorstore.pgvector.index-type'"
+  },
+  {
+    "name": "spring.ai.vectorstore.pgvector.distance-type",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.vectorstore.pgvector.distance-type'"
+  },
+  {
+    "name": "spring.ai.vectorstore.pgvector.url",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.vectorstore.pgvector.url'"
+  },
+  {
+    "name": "spring.ai.vectorstore.pgvector.username",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.vectorstore.pgvector.username'"
+  },
+  {
+    "name": "spring.ai.vectorstore.pgvector.password",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.vectorstore.pgvector.password'"
+  },
+  {
+    "name": "spring.ai.vectorstore.pgvector.index-type",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.vectorstore.pgvector.index-type'"
+  },
+  {
+    "name": "spring.ai.vectorstore.pgvector.initialize-schema",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.vectorstore.pgvector.initialize-schema'"
+  },
+  {
+    "name": "recaptcha.secret.key",
+    "type": "java.lang.String",
+    "description": "A description for 'recaptcha.secret.key'"
+  },
+  {
+    "name": "recaptcha.verify.url",
+    "type": "java.lang.String",
+    "description": "A description for 'recaptcha.verify.url'"
+  },
+  {
+    "name": "file.upload-dir",
+    "type": "java.lang.String",
+    "description": "A description for 'file.upload-dir'"
+  },
+  {
+    "name": "profile.pic",
+    "type": "java.lang.String",
+    "description": "A description for 'profile.pic'"
+  },
+  {
+    "name": "spring.ai.google.genai.api-key",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.google.genai.api-key'"
   }
 ]}

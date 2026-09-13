@@ -40,7 +40,7 @@ public class GuardianNoticeServiceImpl implements GuardianNoticeService {
 
 	@Override
 	public GuardianNoticeDto updateGuardianNotice(GuardianNoticeDto guardianNoticeDto, long id) {
-		GuardianNotice guardianNotice = guardianNoticeRepos.findById(id).orElseThrow(()->new ResourceNotFoundException("Guardian Notice", "guardian notice id", id));
+		GuardianNotice guardianNotice = guardianNoticeRepos.findById(id).orElseThrow(()->new ResourceNotFoundException("Guardian Notice", "guardian notice id", String.valueOf(id)));
 		guardianNotice.setNoticeTitle(guardianNoticeDto.getNoticeTitle());
 		guardianNotice.setNoticeDesc(guardianNoticeDto.getNoticeDesc());
 		guardianNotice.setCreationDate(guardianNoticeDto.getCreationDate());
@@ -52,14 +52,14 @@ public class GuardianNoticeServiceImpl implements GuardianNoticeService {
 
 	@Override
 	public void deleteGuardianNotice(long id) {
-		GuardianNotice guardianNotice = guardianNoticeRepos.findById(id).orElseThrow(()->new ResourceNotFoundException("Guardian Notice", "guardian notice id", id));
+		GuardianNotice guardianNotice = guardianNoticeRepos.findById(id).orElseThrow(()->new ResourceNotFoundException("Guardian Notice", "guardian notice id", String.valueOf(id)));
 		guardianNoticeRepos.delete(guardianNotice);
 
 	}
 
 	@Override
 	public GuardianNoticeDto getGuardianNoticeById(long id) {
-		GuardianNotice guardianNotice = guardianNoticeRepos.findById(id).orElseThrow(()->new ResourceNotFoundException("Guardian Notice", "guardian notice id", id));
+		GuardianNotice guardianNotice = guardianNoticeRepos.findById(id).orElseThrow(()->new ResourceNotFoundException("Guardian Notice", "guardian notice id", String.valueOf(id)));
 		GuardianNoticeDto guardianNoticeDto = GuardianNoticeToDto(guardianNotice);
 		return guardianNoticeDto;
 	}

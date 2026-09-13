@@ -18,6 +18,8 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
 	Boolean existsByUsername(String username);
 	
+	Boolean existsByMobileNo(long mobileNo);
+	
 	List<Teacher> findByStatus(Character status);
 	
 	@Query(value = "select COALESCE(max(t.teacher_id),0) from tbl_teacher t",nativeQuery = true)
@@ -26,5 +28,11 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 	Long countByStatus(Character status);
 	
 	List<Teacher> findByDepts_Id(Long deptId);
+	
+	 Boolean existsByFirstNameAndMiddleNameAndLastName(
+	            String firstName,
+	            String middleName,
+	            String lastName
+	    );
 	
 }
