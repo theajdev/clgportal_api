@@ -5,8 +5,8 @@ This project demonstrates a real-time notification service using Spring Boot for
  - ![Static Badge](https://img.shields.io/badge/Java-17%2B-%23165BFF?logo=openjdk)
  - ![Static Badge](https://img.shields.io/badge/Maven-4.0.0-%236D00CC?logo=apachemaven)
  - ![Static Badge](https://img.shields.io/badge/PostgreSQL-13-%234169E1?logo=postgresql)
- - ![Static Badge](https://img.shields.io/badge/JsonWebToken-0.11.5-%23FD3456?logo=jsonwebtokens&logoColor=auto)
- - ![Static Badge](https://img.shields.io/badge/OpenAPI-2.8.6-%2319216C?logo=openapiinitiative&logoColor=auto)
+ - ![Static Badge](https://img.shields.io/badge/Json%20Web%20Token-0.11.5-%23FD3456?logo=jsonwebtokens&logoColor=auto)
+ - ![Static Badge](https://img.shields.io/badge/Open%20API-2.8.6-%2319216C?logo=openapiinitiative&logoColor=auto)
  - ![Static Badge](https://img.shields.io/badge/Apache%20Kafka-4.3.0-%23FF6300?logo=apachekafka&logoColor=auto)
 
 ## **`⛓Project Structure`**
