@@ -1,27 +1,1901 @@
 openapi: 3.0.3
 
 info:
-  title: College Portal
-  description: This application contains APIs for college portal app.
+  title: College Portal API
+  description: REST APIs for the College Portal application.
   version: "1.0"
-  termsOfService: ajtechsoft@2025
   contact:
     name: AjTechSoft
     email: asksoftwares1@gmail.com
     url: https://ajtechsoft.qzz.io
 
+# IMPORTANT:
+# Replace the URL below with your publicly deployed Spring Boot backend URL.
+# Example:
+#   https://api.example.com
+servers:
+  - url: https://theajdev.github.io
+    description: Production server
+  - url: http://localhost:2025
+    description: Local development server
+
 security:
   - bearerAuth: []
 
-servers:
-  - url: https://theajdev.github.io
-    description: Local server
+tags:
+  - name: Authentication
+  - name: Admin
+  - name: Teacher
+  - name: Student
+  - name: Department
+  - name: Subject
+  - name: Role
+  - name: Years
+  - name: Notice
+  - name: Notice Replies
+  - name: Notifications
+  - name: Permissions
+  - name: User
+
+paths:
+
+  /api/auth/login:
+    post:
+      tags: [Authentication]
+      summary: Login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDto'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtAuthResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+  /api/auth/logout:
+    post:
+      tags: [Authentication]
+      summary: Logout
+      responses:
+        '200':
+          description: Logged out successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /api/admin/:
+    get:
+      tags: [Admin]
+      summary: Get all admins
+      responses:
+        '200':
+          description: List of admins
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminDto'
+    post:
+      tags: [Admin]
+      summary: Create admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminDto'
+      responses:
+        '201':
+          description: Admin created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminDto'
+
+  /api/admin/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      tags: [Admin]
+      summary: Get admin by ID
+      responses:
+        '200':
+          description: Admin details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminDto'
+    put:
+      tags: [Admin]
+      summary: Update admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminDto'
+      responses:
+        '200':
+          description: Updated admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminDto'
+    delete:
+      tags: [Admin]
+      summary: Delete admin
+      responses:
+        '200':
+          description: Admin deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /api/admin/count:
+    get:
+      tags: [Admin]
+      summary: Get admin count
+      responses:
+        '200':
+          description: Admin count
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+
+  /api/admin/profile/upload/{adminId}:
+    post:
+      tags: [Admin]
+      summary: Upload admin profile image
+      parameters:
+        - name: adminId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [image]
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Updated admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminDto'
+
+  /api/admin/profile/image/{imageName}:
+    get:
+      tags: [Admin]
+      summary: Download admin profile image
+      security: []
+      parameters:
+        - name: imageName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: JPEG image
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+
+  /api/teacher/:
+    get:
+      tags: [Teacher]
+      summary: Get all teachers
+      responses:
+        '200':
+          description: List of teachers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeacherDto'
+    post:
+      tags: [Teacher]
+      summary: Create teacher
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeacherDto'
+      responses:
+        '201':
+          description: Teacher created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherDto'
+
+  /api/teacher/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      tags: [Teacher]
+      summary: Get teacher by ID
+      responses:
+        '200':
+          description: Teacher details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherDto'
+    put:
+      tags: [Teacher]
+      summary: Update teacher
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeacherDto'
+      responses:
+        '200':
+          description: Updated teacher
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherDto'
+    delete:
+      tags: [Teacher]
+      summary: Delete teacher
+      responses:
+        '200':
+          description: Teacher deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /api/teacher/status/{status}:
+    get:
+      tags: [Teacher]
+      summary: Get teachers by status
+      parameters:
+        - $ref: '#/components/parameters/status'
+      responses:
+        '200':
+          description: Teachers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeacherDto'
+
+  /api/teacher/count:
+    get:
+      tags: [Teacher]
+      summary: Get teacher count
+      responses:
+        '200':
+          description: Teacher count
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+
+  /api/teacher/profile/upload/{teacherId}:
+    post:
+      tags: [Teacher]
+      summary: Upload teacher profile image
+      parameters:
+        - name: teacherId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [image]
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Updated teacher
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherDto'
+
+  /api/teacher/profile/image/{imageName}:
+    get:
+      tags: [Teacher]
+      summary: Download teacher profile image
+      security: []
+      parameters:
+        - name: imageName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: JPEG image
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+
+  /api/student/:
+    get:
+      tags: [Student]
+      summary: Get all students
+      responses:
+        '200':
+          description: List of students
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentDto'
+    post:
+      tags: [Student]
+      summary: Create student
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentDto'
+      responses:
+        '201':
+          description: Student created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentDto'
+
+  /api/student/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      tags: [Student]
+      summary: Get student by ID
+      responses:
+        '200':
+          description: Student details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentDto'
+    put:
+      tags: [Student]
+      summary: Update student
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentDto'
+      responses:
+        '200':
+          description: Updated student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentDto'
+    delete:
+      tags: [Student]
+      summary: Delete student
+      responses:
+        '200':
+          description: Student deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /api/student/status/{status}:
+    get:
+      tags: [Student]
+      summary: Get students by status
+      parameters:
+        - $ref: '#/components/parameters/status'
+      responses:
+        '200':
+          description: Students
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentDto'
+
+  /api/student/count:
+    get:
+      tags: [Student]
+      summary: Get student count
+      responses:
+        '200':
+          description: Student count
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+
+  /api/student/profile/upload/{studentId}:
+    post:
+      tags: [Student]
+      summary: Upload student profile image
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [image]
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Updated student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentDto'
+
+  /api/student/profile/image/{imageName}:
+    get:
+      tags: [Student]
+      summary: Download student profile image
+      security: []
+      parameters:
+        - name: imageName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: JPEG image
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+
+  /api/department/:
+    get:
+      tags: [Department]
+      summary: Get all departments
+      responses:
+        '200':
+          description: Departments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DepartmentDto'
+    post:
+      tags: [Department]
+      summary: Create department
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepartmentDto'
+      responses:
+        '201':
+          description: Department created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepartmentDto'
+
+  /api/department/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      tags: [Department]
+      summary: Get department by ID
+      responses:
+        '200':
+          description: Department
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepartmentDto'
+    put:
+      tags: [Department]
+      summary: Update department
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepartmentDto'
+      responses:
+        '200':
+          description: Updated department
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepartmentDto'
+    delete:
+      tags: [Department]
+      summary: Delete department
+      responses:
+        '200':
+          description: Department deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /api/department/status/{status}:
+    get:
+      tags: [Department]
+      summary: Get departments by status
+      parameters:
+        - $ref: '#/components/parameters/status'
+      responses:
+        '200':
+          description: Departments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DepartmentDto'
+
+  /api/department/count:
+    get:
+      tags: [Department]
+      summary: Get department count
+      responses:
+        '200':
+          description: Department count
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+
+  /api/subject/:
+    get:
+      tags: [Subject]
+      summary: Get all subjects
+      responses:
+        '200':
+          description: Subjects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectDto'
+    post:
+      tags: [Subject]
+      summary: Create subject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubjectDto'
+      responses:
+        '201':
+          description: Subject created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubjectDto'
+
+  /api/subject/{subjectId}:
+    parameters:
+      - name: subjectId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      tags: [Subject]
+      summary: Get subject by ID
+      responses:
+        '200':
+          description: Subject
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubjectDto'
+    put:
+      tags: [Subject]
+      summary: Update subject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubjectDto'
+      responses:
+        '200':
+          description: Updated subject
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubjectDto'
+    delete:
+      tags: [Subject]
+      summary: Delete subject
+      responses:
+        '200':
+          description: Subject deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /api/subject/status/{status}:
+    get:
+      tags: [Subject]
+      summary: Get subjects by status
+      parameters:
+        - $ref: '#/components/parameters/status'
+      responses:
+        '200':
+          description: Subjects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectDto'
+
+  /api/subject/delete-selected:
+    post:
+      tags: [Subject]
+      summary: Delete selected records
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteRequestDto'
+      responses:
+        '200':
+          description: Delete results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeleteSelectedIdsResponseDto'
+
+  /api/role/:
+    get:
+      tags: [Role]
+      summary: Get all roles
+      responses:
+        '200':
+          description: Roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoleDto'
+    post:
+      tags: [Role]
+      summary: Create role
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleDto'
+      responses:
+        '201':
+          description: Role created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleDto'
+
+  /api/role/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      tags: [Role]
+      summary: Get role by ID
+      responses:
+        '200':
+          description: Role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleDto'
+    put:
+      tags: [Role]
+      summary: Update role
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleDto'
+      responses:
+        '200':
+          description: Updated role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleDto'
+    delete:
+      tags: [Role]
+      summary: Delete role
+      responses:
+        '200':
+          description: Role deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /api/role/status/{status}:
+    get:
+      tags: [Role]
+      summary: Get roles by active status
+      parameters:
+        - name: status
+          in: path
+          required: true
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoleDto'
+
+  /api/role/count:
+    get:
+      tags: [Role]
+      summary: Get role count
+      responses:
+        '200':
+          description: Role count
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+
+  /api/role/details:
+    get:
+      tags: [Role]
+      summary: Get users by role
+      parameters:
+        - name: roleId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 1
+      responses:
+        '200':
+          description: Users belonging to role
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoleDetail'
+
+  /api/years/:
+    get:
+      tags: [Years]
+      summary: Get all academic years
+      responses:
+        '200':
+          description: Academic years
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/YearsDto'
+    post:
+      tags: [Years]
+      summary: Create academic year
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/YearsDto'
+      responses:
+        '201':
+          description: Academic year created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/YearsDto'
+
+  /api/years/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      tags: [Years]
+      summary: Get academic year by ID
+      responses:
+        '200':
+          description: Academic year
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/YearsDto'
+    put:
+      tags: [Years]
+      summary: Update academic year
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/YearsDto'
+      responses:
+        '200':
+          description: Updated academic year
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/YearsDto'
+    delete:
+      tags: [Years]
+      summary: Delete academic year
+      responses:
+        '200':
+          description: Academic year deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /api/guardianNotice/:
+    post:
+      tags: [Notice]
+      summary: Create guardian notice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuardianNoticeDto'
+      responses:
+        '201':
+          description: Guardian notice created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuardianNoticeDto'
+    get:
+      tags: [Notice]
+      summary: Get all guardian notices
+      responses:
+        '200':
+          description: Guardian notices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GuardianNoticeDto'
+
+  /api/guardianNotice/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      tags: [Notice]
+      summary: Get guardian notice by ID
+      responses:
+        '200':
+          description: Guardian notice
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuardianNoticeDto'
+    put:
+      tags: [Notice]
+      summary: Update guardian notice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuardianNoticeDto'
+      responses:
+        '200':
+          description: Updated guardian notice
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuardianNoticeDto'
+    delete:
+      tags: [Notice]
+      summary: Delete guardian notice
+      responses:
+        '200':
+          description: Guardian notice deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /api/notice/:
+    get:
+      tags: [Notice]
+      summary: Get all notices
+      responses:
+        '200':
+          description: Notices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NoticeDto'
+    post:
+      tags: [Notice]
+      summary: Create notice with attachments
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [notice]
+              properties:
+                notice:
+                  type: object
+                  description: Notice JSON object
+                  allOf:
+                    - $ref: '#/components/schemas/NoticeDto'
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '201':
+          description: Notice created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoticeDto'
+
+  /api/notice/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      tags: [Notice]
+      summary: Get notice by ID
+      responses:
+        '200':
+          description: Notice
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoticeDto'
+    put:
+      tags: [Notice]
+      summary: Update notice
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [notice]
+              properties:
+                notice:
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/NoticeDto'
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: Updated notice
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoticeDto'
+    delete:
+      tags: [Notice]
+      summary: Delete notice
+      responses:
+        '200':
+          description: Notice deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /api/notice/status/{status}:
+    get:
+      tags: [Notice]
+      summary: Get notices by status
+      parameters:
+        - $ref: '#/components/parameters/status'
+      responses:
+        '200':
+          description: Notices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NoticeDto'
+
+  /api/notice/count:
+    get:
+      tags: [Notice]
+      summary: Get notice count
+      responses:
+        '200':
+          description: Notice count
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+
+  /api/notice/depts/{id}:
+    get:
+      tags: [Notice]
+      summary: Get notices by department
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Notices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NoticeDto'
+
+  /api/notice/{id}/read/{userId}:
+    post:
+      tags: [Notice]
+      summary: Mark notice as read
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Marked as read
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /api/notice/read/{noticeId}:
+    get:
+      tags: [Notice]
+      summary: Get notice read details
+      parameters:
+        - name: noticeId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Read details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NoticeReadDto'
+
+  /api/notice/attachment/{noticeId}/{fileName}:
+    get:
+      tags: [Notice]
+      summary: Download notice attachment
+      parameters:
+        - name: noticeId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: fileName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Attachment file
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+  /api/notice/{notificationId}/reply:
+    post:
+      tags: [Notice Replies]
+      summary: Reply to notice
+      parameters:
+        - name: notificationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Notice reply request
+              properties:
+                message:
+                  type: string
+      responses:
+        '200':
+          description: Reply result
+
+  /api/notice/{noticeId}/replies:
+    get:
+      tags: [Notice Replies]
+      summary: Get notice replies
+      parameters:
+        - name: noticeId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Replies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NoticeReplyDto'
+
+  /api/notice/replies:
+    get:
+      tags: [Notice Replies]
+      summary: Get replies for authenticated user
+      responses:
+        '200':
+          description: Replies
+
+  /api/notifications/unread/{username}/{deptId}:
+    get:
+      tags: [Notifications]
+      summary: Get unread notifications
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: deptId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Unread notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /api/notifications/{deptId}:
+    get:
+      tags: [Notifications]
+      summary: Get all notifications for department
+      parameters:
+        - name: deptId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /api/reply/{notificationId}:
+    get:
+      tags: [Notifications]
+      summary: Get notification details
+      parameters:
+        - name: notificationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Notification details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /api/notifications/mark-all-read/{username}/{deptId}:
+    put:
+      tags: [Notifications]
+      summary: Mark all notifications as read
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: deptId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Notifications marked as read
+
+  /api/notifications/mark-one/{notificationId}/{username}:
+    put:
+      tags: [Notifications]
+      summary: Mark one notification as read
+      parameters:
+        - name: notificationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Notification marked as read
+
+  /api/notifications/{deptId}/{username}/replies:
+    get:
+      tags: [Notifications]
+      summary: Get notification replies
+      parameters:
+        - name: deptId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Replies
+
+  /api/permissions/permissions:
+    get:
+      tags: [Permissions]
+      summary: Get all API permissions
+      responses:
+        '200':
+          description: Permissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /api/permissions/role/{roleId}:
+    get:
+      tags: [Permissions]
+      summary: Get permissions for role
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Role permissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PermissionDto'
+    put:
+      tags: [Permissions]
+      summary: Update role permissions
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/PermissionDto'
+      responses:
+        '200':
+          description: Permissions updated
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /api/user/change-password:
+    post:
+      tags: [User]
+      summary: Change password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+      responses:
+        '200':
+          description: Password change result
 
 components:
+
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
 
-paths: {}
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+    status:
+      name: status
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 1
+
+  schemas:
+
+    LoginDto:
+      type: object
+      properties:
+        usernameOrEmail:
+          type: string
+        password:
+          type: string
+          format: password
+        authority:
+          type: string
+          example: ADMIN
+
+    JwtAuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserResponseDto'
+
+    UserResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        type:
+          type: string
+          example: ADMIN
+        token:
+          type: string
+
+    ApiResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: boolean
+
+    AdminDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        middleName:
+          type: string
+        lastName:
+          type: string
+        username:
+          type: string
+        mobileNo:
+          type: integer
+          format: int64
+        address:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        profilePic:
+          type: string
+        status:
+          type: string
+          minLength: 1
+          maxLength: 1
+        designation:
+          type: string
+        about:
+          type: string
+        postedOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        deptId:
+          type: integer
+          format: int64
+
+    TeacherDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        middleName:
+          type: string
+        lastName:
+          type: string
+        mobileNo:
+          type: integer
+          format: int64
+        address:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        profilePic:
+          type: string
+        status:
+          type: string
+          minLength: 1
+          maxLength: 1
+        designation:
+          type: string
+        about:
+          type: string
+        postedOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        deptId:
+          type: integer
+          format: int64
+
+    StudentDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        middleName:
+          type: string
+        lastName:
+          type: string
+        mobileNo:
+          type: integer
+          format: int64
+        address:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        guardianName:
+          type: string
+        profilePic:
+          type: string
+        status:
+          type: string
+          minLength: 1
+          maxLength: 1
+        about:
+          type: string
+        postedOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        teacher:
+          $ref: '#/components/schemas/TeacherDto'
+        deptId:
+          type: integer
+          format: int64
+
+    DepartmentDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        deptDesc:
+          type: string
+        status:
+          type: string
+          minLength: 1
+          maxLength: 1
+        student:
+          $ref: '#/components/schemas/StudentDto'
+        teacher:
+          $ref: '#/components/schemas/TeacherDto'
+
+    SubjectDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        subject:
+          type: string
+        status:
+          type: string
+          minLength: 1
+          maxLength: 1
+
+    RoleDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        roleName:
+          type: string
+        roleDisp:
+          type: string
+        isActive:
+          type: boolean
+
+    YearsDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        yearDesc:
+          type: string
+        status:
+          type: string
+          minLength: 1
+          maxLength: 1
+
+    GuardianNoticeDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        creationDate:
+          type: string
+          format: date-time
+        noticeDesc:
+          type: string
+        noticeTitle:
+          type: string
+        status:
+          type: string
+          minLength: 1
+          maxLength: 1
+        studentId:
+          type: integer
+          format: int64
+        teacherId:
+          type: integer
+          format: int64
+
+    AttachmentDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        fileName:
+          type: string
+        fileUrl:
+          type: string
+
+    NoticeDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        noticeTitle:
+          type: string
+        noticeDesc:
+          type: string
+        sendersUsername:
+          type: string
+        sendersProfilePic:
+          type: string
+        sentBy:
+          type: string
+        status:
+          type: string
+          minLength: 1
+          maxLength: 1
+        deptId:
+          type: array
+          items:
+            type: integer
+            format: int64
+        postedOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        isRead:
+          type: string
+          minLength: 1
+          maxLength: 1
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttachmentDto'
+
+    NoticeReadDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        noticeId:
+          type: integer
+          format: int64
+        studentId:
+          type: integer
+          format: int64
+        teacherId:
+          type: integer
+          format: int64
+        readAt:
+          type: string
+          format: date-time
+
+    NoticeReplyDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        message:
+          type: string
+        repliedBy:
+          type: string
+        profilePic:
+          type: string
+        designation:
+          type: string
+        repliedOn:
+          type: string
+          format: date-time
+        username:
+          type: string
+        NotificationId:
+          type: integer
+          format: int64
+
+    PermissionDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        apiUrl:
+          type: string
+        httpMethod:
+          type: string
+        selected:
+          type: boolean
+
+    DeleteRequestDto:
+      type: object
+      properties:
+        module:
+          type: string
+          description: Module name used by the application.
+          example: SUBJECT
+        ids:
+          type: array
+          items:
+            type: integer
+            format: int64
+
+    DeleteSelectedIdsResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        message:
+          type: string
+
+    ChangePasswordRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        currentPassword:
+          type: string
+          format: password
+        newPassword:
+          type: string
+          format: password
+        confirmPassword:
+          type: string
+          format: password
+
+    RoleDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        roleId:
+          type: integer
+          format: int64
+        profilePic:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
