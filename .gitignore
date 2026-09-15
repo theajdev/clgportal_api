@@ -6,4 +6,6 @@
 .settings
 .springBeans
 .sts4-cache
+.yml
+.yaml
 /target/
