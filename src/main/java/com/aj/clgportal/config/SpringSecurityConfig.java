@@ -69,7 +69,7 @@ public class SpringSecurityConfig {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
 		corsConfiguration.setAllowCredentials(true);
-		corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000", "http://10.255.11.225:3000","http://localhost:8085","https://theajdev.github.io/clgportal_api/"));
+		corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000", "http://10.255.11.225:3000","http://localhost:8085","https://theajdev.github.io"));
 		corsConfiguration.addAllowedHeader("*");
 		corsConfiguration.addAllowedMethod("*");
 		corsConfiguration.setMaxAge(3600L);
