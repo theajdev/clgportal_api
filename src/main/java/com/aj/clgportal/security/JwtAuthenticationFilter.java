@@ -22,10 +22,10 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-	@Autowired
-	private JwtTokenProvider jwtTokenProvider;
+	
+	private final JwtTokenProvider jwtTokenProvider;
 
-	private UserDetailsService userDetailsService;
+	private final UserDetailsService userDetailsService;
 
 	public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
 		this.jwtTokenProvider = jwtTokenProvider;
