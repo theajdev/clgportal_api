@@ -17,8 +17,11 @@ import com.aj.clgportal.dto.ApiResponse;
 import com.aj.clgportal.dto.DepartmentDto;
 import com.aj.clgportal.service.DeptService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/department")
+@Tag(name = "Department APIs",description = "Add, update, delete & get departments details.")
 public class DepartmentController {
 
 	@Autowired

@@ -18,8 +18,11 @@ import com.aj.clgportal.dto.ApiResponse;
 import com.aj.clgportal.dto.YearsDto;
 import com.aj.clgportal.service.YearsService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/years")
+@Tag(name = "Academic Years APIs",description = "Get, modify, remove & add academic year.")
 public class YearsController {
 	
 	@Autowired

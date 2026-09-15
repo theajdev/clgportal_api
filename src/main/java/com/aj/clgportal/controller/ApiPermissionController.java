@@ -18,11 +18,13 @@ import com.aj.clgportal.entity.Role;
 import com.aj.clgportal.repository.ApiPermissionRepository;
 import com.aj.clgportal.repository.RoleRepository;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/permissions")
 @RequiredArgsConstructor
+@Tag(name = "API Permissions APIs",description = "Get & update API permissions.")
 public class ApiPermissionController {
 
 	private final ApiPermissionRepository permissionRepo;

@@ -15,12 +15,14 @@ import com.aj.clgportal.dto.LoginDto;
 import com.aj.clgportal.dto.UserResponseDto;
 import com.aj.clgportal.service.AuthService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Authentication API", description = "Login")
 public class AuthController {
 
 	@SuppressWarnings("unused")

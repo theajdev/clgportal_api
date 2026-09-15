@@ -16,8 +16,11 @@ import com.aj.clgportal.dto.NoticeReplyDto;
 import com.aj.clgportal.entity.NoticeReply;
 import com.aj.clgportal.service.NoticeReplyService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/notice")
+@Tag(name = "Notice reply APIs",description = "Add, update, delete & get notice replies.")
 public class NoticeReplyController {
 
 	@Autowired

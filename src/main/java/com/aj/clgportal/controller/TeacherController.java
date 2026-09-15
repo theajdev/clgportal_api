@@ -25,11 +25,13 @@ import com.aj.clgportal.dto.TeacherDto;
 import com.aj.clgportal.service.ProfilePicService;
 import com.aj.clgportal.service.TeacherService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/teacher")
+@Tag(name = "Teacher APIs",description = "Add, update, delete & get teacher details.")
 public class TeacherController {
 	
 	@Autowired

@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.aj.clgportal.dto.ChangePasswordRequest;
 import com.aj.clgportal.service.UserPasswordRequestService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/user")
+@Tag(name = "Change Password API",description = "update users password.")
 public class UserPasswordController {
 	@Autowired
 	private UserPasswordRequestService userService;

@@ -19,12 +19,14 @@ import com.aj.clgportal.dto.RoleDetailProjection;
 import com.aj.clgportal.dto.RoleDto;
 import com.aj.clgportal.service.RoleService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/role")
 @RequiredArgsConstructor
+@Tag(name = "Roles APIs",description = "Add, update, delete & get roles.")
 public class RoleController {
 
 	public final RoleService roleService;

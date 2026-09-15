@@ -18,8 +18,11 @@ import com.aj.clgportal.dto.ApiResponse;
 import com.aj.clgportal.dto.GuardianNoticeDto;
 import com.aj.clgportal.service.GuardianNoticeService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/guardianNotice")
+@Tag(name = "Guardian APIs",description = "Add, update, delete & get guardian notice details.")
 public class GuardianNoticeController {
 	
 	@Autowired

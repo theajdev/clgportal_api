@@ -30,8 +30,11 @@ import com.aj.clgportal.dto.NoticeDto;
 import com.aj.clgportal.dto.NoticeReadDto;
 import com.aj.clgportal.service.NoticeService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/notice")
+@Tag(name = "Notice APIs",description = "Read, Write, Update and Remove notice.")
 public class NoticeController {
 
 	@Autowired

@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @OpenAPIDefinition(
 		info = @Info(
@@ -19,7 +21,23 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 					),
 				termsOfService = "ajtechsoft@2025"
 				),
-				security = @SecurityRequirement(name = "bearerAuth") // Enable globally
+				security = @SecurityRequirement(name = "bearerAuth"), // Enable globally
+		servers= {
+				@Server(
+						url = "http://localhost:2025",
+						description = "Local Server"
+						),
+				@Server(
+						
+						url = "https://theajdev.github.io",
+						description = "Production Server"
+						)
+		},
+		tags = {
+				@Tag(name = "Authentication API", description = "Login"),
+				@Tag(name = "Notice APIs",description = "Read, write, add & remove notices"),
+				@Tag(name = "Academic Years APIs",description = "Add new academic year, also update and remove existing academic year.")
+		}
 		)
 @SecurityScheme(
 	    name = "bearerAuth",

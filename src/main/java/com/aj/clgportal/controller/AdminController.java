@@ -25,10 +25,13 @@ import com.aj.clgportal.dto.ApiResponse;
 import com.aj.clgportal.service.AdminService;
 import com.aj.clgportal.service.ProfilePicService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/admin")
+@Tag(name = "Admin APIs",description = "Add, update, delete & get admin details.")
 public class AdminController {
 
 	@Autowired

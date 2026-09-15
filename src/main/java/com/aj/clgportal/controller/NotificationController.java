@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aj.clgportal.util.AppConstants;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.aj.clgportal.entity.Notification;
 import com.aj.clgportal.entity.NotificationUser;
 import com.aj.clgportal.service.NotificationService;
@@ -22,6 +25,7 @@ import com.aj.clgportal.service.NotificationUserService;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
+@Tag(name = "Notification APIs",description = "Add, update, delete & get notifications details.")
 public class NotificationController {
 
     private final SecurityFilterChain securityFilterChain;

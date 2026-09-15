@@ -10,7 +10,7 @@ spring:
     location: classpath:banner.txt
 
   profiles:
-    active: prod
+    active: dev
 
   servlet:
     multipart:

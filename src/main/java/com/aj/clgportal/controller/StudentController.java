@@ -25,11 +25,13 @@ import com.aj.clgportal.dto.StudentDto;
 import com.aj.clgportal.service.ProfilePicService;
 import com.aj.clgportal.service.StudentService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/student")
+@Tag(name = "Student APIs",description = "Add, update, delete & get student details.")
 public class StudentController {
 
 	@Autowired

@@ -20,10 +20,12 @@ import com.aj.clgportal.dto.DeleteSelectedIdsResponseDto;
 import com.aj.clgportal.dto.SubjectDto;
 import com.aj.clgportal.service.SubjectService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/subject")
+@Tag(name = "Subject APIs",description = "Add, update, delete & get subject details.")
 public class SubjectController {
 
 	@Autowired
